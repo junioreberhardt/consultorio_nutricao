@@ -1,0 +1,478 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Novo Paciente : Nutrir Melhor{% endblock %}
+
+{% block conteudo %}
+
+<div class="mx-auto max-w-2xl py-7">
+
+    <!-- Cabeçalho -->
+    <div class="mb-7">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+            <div>
+                <h2 class="text-[22px] font-semibold tracking-tight text-[var(--color-text)]">
+                    Novo Paciente
+                </h2>
+
+                <p class="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">
+                    Insira as informações clínicas e métricas iniciais do paciente.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Formulário -->
+    <div class="
+        rounded-2xl
+        border border-[var(--color-border)]
+        bg-[var(--color-surface)]
+        shadow-sm
+    ">
+
+        <form
+            method="POST"
+            action="{{ url_for('pacientes.cadastrar_paciente_salvar') }}"
+            class="p-6 space-y-6"
+        >
+
+            <!-- Nome completo -->
+            <div class="space-y-2">
+
+                <label
+                    for="nome"
+                    class="text-sm font-medium text-[var(--color-text)]"
+                >
+                    Nome completo
+                </label>
+
+                <div class="relative">
+
+                    <span class="
+                        absolute left-3 top-1/2 -translate-y-1/2
+                        text-[var(--color-text-muted)]
+                    ">
+                        {{ lucide('user', size=18) }}
+                    </span>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        required
+                        autocomplete="name"
+                        placeholder="Digite o nome completo"
+                        class="
+                            w-full
+                            rounded-xl
+                            border border-[var(--color-border)]
+                            bg-[var(--color-surface)]
+                            py-2.5 pl-10 pr-4
+                            text-sm
+                            text-[var(--color-text)]
+                            outline-none
+                            transition
+                            placeholder:text-[var(--color-text-subtle)]
+                            focus:border-[var(--color-primary)]
+                            focus:ring-2
+                            focus:ring-[var(--color-primary)]/20
+                        "
+                    >
+
+                </div>
+            </div>
+
+
+            <!-- Data de nascimento + Sexo -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Data de nascimento -->
+                <div class="space-y-2">
+
+                    <label
+                        for="data_nascimento"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        Data de nascimento
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('calendar', size=18) }}
+                        </span>
+
+                        <input
+                            type="date"
+                            id="data_nascimento"
+                            name="data_nascimento"
+                            required
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-4
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+
+                    </div>
+                </div>
+
+
+                <!-- Sexo -->
+                <div class="space-y-2">
+
+                    <label
+                        for="genero"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        Sexo
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('venus-and-mars', size=18) }}
+                        </span>
+
+                        <select
+                            id="genero"
+                            name="genero"
+                            required
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-4
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+                            <option value="">Selecione</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                        </select>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Peso + Altura -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Peso -->
+                <div class="space-y-2">
+
+                    <label
+                        for="peso"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        Peso
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('scale', size=18) }}
+                        </span>
+
+                        <input
+                            type="number"
+                            id="peso"
+                            name="peso"
+                            required
+                            min="1"
+                            step="0.1"
+                            placeholder="Ex.: 70,5"
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-14
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                placeholder:text-[var(--color-text-subtle)]
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+
+                        <span class="
+                            absolute right-3 top-1/2 -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-muted)]
+                        ">
+                            kg
+                        </span>
+
+                    </div>
+                </div>
+
+
+                <!-- Altura -->
+                <div class="space-y-2">
+
+                    <label
+                        for="altura"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        Altura
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('ruler', size=18) }}
+                        </span>
+
+                        <input
+                            type="number"
+                            id="altura"
+                            name="altura"
+                            required
+                            min="1"
+                            step="0.1"
+                            placeholder="Ex.: 175"
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-14
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                placeholder:text-[var(--color-text-subtle)]
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+
+                        <span class="
+                            absolute right-3 top-1/2 -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-muted)]
+                        ">
+                            cm
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Telefone + E-mail -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Telefone -->
+                <div class="space-y-2">
+
+                    <label
+                        for="telefone"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        Telefone
+                        <span class="font-normal text-[var(--color-text-muted)]">
+                            (opcional)
+                        </span>
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('phone', size=18) }}
+                        </span>
+
+                        <input
+                            type="tel"
+                            id="telefone"
+                            name="telefone"
+                            autocomplete="tel"
+                            inputmode="numeric"
+                            maxlength="15"
+                            placeholder="(47) 99999-9999"
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-4
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                placeholder:text-[var(--color-text-subtle)]
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+
+                    </div>
+                </div>
+
+
+                <!-- E-mail -->
+                <div class="space-y-2">
+
+                    <label
+                        for="email"
+                        class="text-sm font-medium text-[var(--color-text)]"
+                    >
+                        E-mail
+                        <span class="font-normal text-[var(--color-text-muted)]">
+                            (opcional)
+                        </span>
+                    </label>
+
+                    <div class="relative">
+
+                        <span class="
+                            absolute left-3 top-1/2 -translate-y-1/2
+                            text-[var(--color-text-muted)]
+                        ">
+                            {{ lucide('mail', size=18) }}
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email"
+                            placeholder="Ex.: paciente@email.com"
+                            class="
+                                w-full
+                                rounded-xl
+                                border border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                py-2.5 pl-10 pr-4
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                placeholder:text-[var(--color-text-subtle)]
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/20
+                            "
+                        >
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Separador -->
+            <div class="border-t border-[var(--color-border)]"></div>
+
+
+            <!-- Ações -->
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+                <!-- Cancelar -->
+                <a
+                    href="{{ url_for('pacientes.listar_pacientes') }}"
+                    class="
+                        inline-flex
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-5 py-2.5
+                        text-sm font-medium
+                        text-[var(--color-text-muted)]
+                        transition
+                        hover:bg-[var(--color-surface-muted)]
+                        hover:text-[var(--color-text)]
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/10
+                    "
+                >
+                    {{ lucide('x', size=18) }}
+                    Cancelar
+                </a>
+
+
+                <!-- Gravar -->
+                <button
+                    type="submit"
+                    class="
+                        inline-flex
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-xl
+                        bg-[var(--color-primary)]
+                        px-5 py-2.5
+                        text-sm font-medium
+                        text-white
+                        shadow-sm
+                        transition
+                        hover:bg-[var(--color-primary-hover)]
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    "
+                >
+                    {{ lucide('save', size=18) }}
+                    Gravar no Banco
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/telefone.js') }}"></script>
+{% endblock %}
+
+
+{% block scripts %}
+
+
+{% endblock %}

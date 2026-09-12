@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Dashboard : Nutrir Melhor{% endblock %}
+
+{% block conteudo %}
+<!-- Container principal centralizado com largura máxima controlada pelo Tailwind -->
+<div class="max-w-[1000px] mx-auto px-4 py-6">
+    
+    <!-- Título e Subtítulo com tipografia limpa -->
+    <h2 class="text-2xl font-bold text-gray-800">Painel de Controle Inicial</h2>
+    <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">
+        Bem-vindo de volta, <strong class="font-semibold text-gray-700">{{ current_user.nome }}</strong>. Aqui está o resumo operacional do consultório para hoje:
+    </p>
+    
+    <!-- Divisor sutil substituindo a tag <hr> antiga -->
+    <div class="border-b border-gray-100 my-5"></div>
+    
+    <!-- Verificação de permissões do usuário -->
+    {% if current_user.eh_admin() or current_user.pode_cadastrar_paciente or current_user.pode_montar_cardapio %}
+    
+    <!-- GRID DE MÉTRICAS: Responsivo (1 coluna no celular, 3 no computador) com espaçamento perfeito (gap-4) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- CARD 1: TOTAL DE PACIENTES -->
+        <div class="flex items-center gap-x-4 bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+            <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl shrink-0">
+                {{ lucide('users', style='width: 22px; height: 22px;')|safe }}
+            </div>
+            <div class="flex flex-col">
+                <span class="text-2xl font-bold text-gray-800 leading-tight">{{ qtd_pacientes }}</span>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider mt-0.5">Pacientes Atendidos</span>
+            </div>
+        </div>
+
+        <!-- CARD 2: EQUIPE ATIVA -->
+        <div class="flex items-center gap-x-4 bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+            <div class="bg-blue-50 text-blue-600 p-3 rounded-xl shrink-0">
+                <!-- Alterado para lock-keyhole ou shield para garantir compatibilidade da biblioteca -->
+                {{ lucide('shield', style='width: 22px; height: 22px;')|safe }}
+            </div>
+            <div class="flex flex-col">
+                <span class="text-2xl font-bold text-gray-800 leading-tight">{{ qtd_funcionarios }}</span>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider mt-0.5">Profissionais Ativos</span>
+            </div>
+        </div>
+
+        <!-- CARD 3: STATUS DO SISTEMA -->
+        <div class="flex items-center gap-x-4 bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+            <div class="bg-emerald-50/70 text-emerald-600 p-3 rounded-xl shrink-0">
+                {{ lucide('activity', style='width: 22px; height: 22px;')|safe }}
+            </div>
+            <div class="flex flex-col">
+                <span class="text-base font-bold text-emerald-600 leading-tight">Online</span>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider mt-1">Banco SQLite3 Pronto</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bloco Informativo de Dica de Uso (Substituindo os estilos inline antigos) -->
+    <div class="mt-8 p-5 bg-gray-50 border border-gray-100 rounded-xl">
+        <h4 class="flex items-center gap-x-2 text-sm font-semibold text-gray-700 mb-2">
+            <span class="text-gray-400">{{ lucide('info', style='width: 18px; height: 18px;')|safe }}</span>
+            Dica de Uso Rápido
+        </h4>
+        <p class="text-sm text-gray-500 leading-relaxed">
+            Para iniciar um novo plano alimentar, acesse a aba <strong class="font-medium text-gray-700">Meus Pacientes</strong> no menu superior e selecione o botão <strong class="font-medium text-gray-700">Prescrever</strong> ao lado do paciente desejado. O sistema puxará automaticamente as métricas corporais do banco de dados.
+        </p>
+    </div>
+
+    {% endif %}
+
+    <!-- SE O USUÁRIO FOR RECENTE E NÃO TIVER NENHUMA CAIXA MARCADA -->
+    {% if not current_user.eh_admin() and not current_user.pode_cadastrar_paciente and not current_user.pode_montar_cardapio %}
+        <!-- Alerta de Restrição elegante em tons pastéis (Vermelho Suave) -->
+        <div class="mt-6 flex items-start gap-x-3 bg-red-50 border border-red-100 text-red-700 text-sm p-4 rounded-xl leading-relaxed">
+            <span class="shrink-0 mt-0.5">{{ lucide('shield-alert', style='width: 18px; height: 18px;')|safe }}</span>
+            <div>
+                <strong class="font-semibold">Perfil Restrito:</strong> Sua conta foi liberada no sistema, mas você ainda não possui permissões específicas para acessar as ferramentas do consultório. Solicite a ativação das suas caixas de acesso com o administrador.
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

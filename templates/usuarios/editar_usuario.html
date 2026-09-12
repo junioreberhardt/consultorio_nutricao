@@ -1,0 +1,774 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Editar Usuário : Nutrir Melhor{% endblock %}
+
+{% block conteudo %}
+
+{% set formulario = dados_formulario if dados_formulario is defined else {} %}
+
+{% set cargos_padrao = [
+    'atendente',
+    'estagiario',
+    'nutricionista',
+    'secretaria'
+] %}
+
+{% set cargo_atual = formulario.get('cargo', usuario.cargo) %}
+
+{% if 'cargo_personalizado' in formulario %}
+    {% set cargo_personalizado_atual = formulario.get('cargo_personalizado', '') %}
+{% elif usuario.cargo not in cargos_padrao %}
+    {% set cargo_personalizado_atual = usuario.cargo %}
+{% else %}
+    {% set cargo_personalizado_atual = '' %}
+{% endif %}
+
+
+<div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- CABEÇALHO -->
+
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+            <div class="mb-1 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+
+                <a
+                    href="{{ url_for('usuarios.gerenciar_usuarios') }}"
+                    class="transition hover:text-gray-900 dark:hover:text-white"
+                >
+                    Usuários
+                </a>
+
+                <span>/</span>
+
+                <span>Editar</span>
+
+            </div>
+
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Editar usuário
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Gerencie os dados, acesso e permissões deste usuário.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('usuarios.gerenciar_usuarios') }}"
+            class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+        >
+            {{ lucide('arrow-left', class='h-4 w-4')|safe }}
+            Voltar
+        </a>
+
+    </div>
+
+
+    <!-- ALERTA DE ERRO -->
+
+    {% if erro_edicao is defined and erro_edicao %}
+
+        <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/20">
+
+            <div class="flex items-start gap-3">
+
+                <div class="mt-0.5 shrink-0 text-red-600 dark:text-red-400">
+
+                    {{ lucide('circle-alert', class='h-5 w-5')|safe }}
+
+                </div>
+
+                <div>
+
+                    <p class="text-sm font-semibold text-red-800 dark:text-red-300">
+                        Não foi possível salvar as alterações
+                    </p>
+
+                    <p class="mt-1 text-sm text-red-700 dark:text-red-400">
+                        {{ erro_edicao }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- CARD DO USUÁRIO -->
+
+    <div class="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+        <div class="flex items-center gap-4 p-6">
+
+            <!-- AVATAR -->
+
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-700">
+
+                {% if usuario.foto_perfil %}
+
+                    <img
+                        src="{{ url_for('static', filename=usuario.foto_perfil) }}"
+                        alt="Foto de {{ usuario.nome }}"
+                        class="h-full w-full object-cover"
+                    >
+
+                {% else %}
+
+                    {% set partes_nome = usuario.nome.strip().split() %}
+
+                    {% if partes_nome|length >= 2 %}
+                        {% set iniciais = partes_nome[0][0] ~ partes_nome[-1][0] %}
+                    {% else %}
+                        {% set iniciais = usuario.nome[0] %}
+                    {% endif %}
+
+                    <span class="text-xl font-semibold uppercase text-gray-600 dark:text-gray-200">
+                        {{ iniciais }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- DADOS -->
+
+            <div class="min-w-0">
+
+                <h2 class="truncate text-xl font-semibold text-gray-900 dark:text-white">
+                    {{ usuario.nome }}
+                </h2>
+
+                <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                    @{{ usuario.nome_usuario }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FORMULÁRIO ÚNICO -->
+
+    <form
+        method="POST"
+        action="{{ url_for('usuarios.editar_usuario_dados', id=usuario.id) }}"
+        class="space-y-6"
+    >
+
+
+        <!-- ================================================= -->
+        <!-- DADOS PESSOAIS -->
+        <!-- ================================================= -->
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+            <div class="border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700">
+
+                        {{ lucide('user-pen', class='h-5 w-5 text-gray-600 dark:text-gray-300')|safe }}
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-semibold text-gray-900 dark:text-white">
+                            Dados pessoais
+                        </h2>
+
+                        <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                            Informações básicas utilizadas no sistema.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="space-y-5 p-6">
+
+                <!-- NOME -->
+
+                <div>
+
+                    <label
+                        for="nome"
+                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Nome completo
+                    </label>
+
+                    <div class="relative">
+
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+
+                            {{ lucide('user', class='h-4 w-4')|safe }}
+
+                        </div>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            value="{{ formulario.get('nome', usuario.nome) }}"
+                            required
+                            autocomplete="name"
+                            class="w-full rounded-xl border {% if erro_campo == 'nome' %}border-red-400{% else %}border-gray-200{% endif %} bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div>
+
+                    <label
+                        for="nome_usuario"
+                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Nome de usuário
+                    </label>
+
+                    <div class="relative">
+
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+
+                            {{ lucide('at-sign', class='h-4 w-4')|safe }}
+
+                        </div>
+
+                        <input
+                            type="text"
+                            id="nome_usuario"
+                            value="{{ usuario.nome_usuario }}"
+                            disabled
+                            class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 py-3 pl-10 pr-4 text-sm text-gray-500 outline-none dark:border-gray-700 dark:bg-gray-700 dark:text-gray-400"
+                        >
+
+                    </div>
+
+                    <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                        O nome de usuário não pode ser alterado.
+                    </p>
+
+                </div>
+
+
+                <!-- E-MAIL -->
+
+                <div>
+
+                    <label
+                        for="email"
+                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        E-mail
+                    </label>
+
+                    <div class="relative">
+
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+
+                            {{ lucide('mail', class='h-4 w-4')|safe }}
+
+                        </div>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ formulario.get('email', usuario.email) }}"
+                            required
+                            autocomplete="email"
+                            class="w-full rounded-xl border {% if erro_campo == 'email' %}border-red-400{% else %}border-gray-200{% endif %} bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARGO -->
+
+                <div>
+
+                    <label
+                        for="cargo"
+                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Cargo
+                    </label>
+
+                    <div class="relative">
+
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+
+                            {{ lucide('briefcase', class='h-4 w-4')|safe }}
+
+                        </div>
+
+                        <select
+                            id="cargo"
+                            name="cargo"
+                            class="w-full appearance-none rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-10 text-sm text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        >
+
+                            <option
+                                value="atendente"
+                                {% if cargo_atual == 'atendente' %}selected{% endif %}
+                            >
+                                Atendente
+                            </option>
+
+                            <option
+                                value="estagiario"
+                                {% if cargo_atual == 'estagiario' %}selected{% endif %}
+                            >
+                                Estagiário
+                            </option>
+
+                            <option
+                                value="nutricionista"
+                                {% if cargo_atual == 'nutricionista' %}selected{% endif %}
+                            >
+                                Nutricionista
+                            </option>
+
+                            <option
+                                value="secretaria"
+                                {% if cargo_atual == 'secretaria' %}selected{% endif %}
+                            >
+                                Secretária
+                            </option>
+
+                            <option
+                                value="outro"
+                                {% if cargo_atual == 'outro' or cargo_atual not in cargos_padrao %}selected{% endif %}
+                            >
+                                Outro...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARGO PERSONALIZADO -->
+
+                <div
+                    id="campo-cargo-outro"
+                    class="{% if cargo_atual in cargos_padrao %}hidden{% endif %}"
+                >
+
+                    <label
+                        for="cargo_personalizado"
+                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Cargo personalizado
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cargo_personalizado"
+                        name="cargo_personalizado"
+                        value="{{ cargo_personalizado_atual }}"
+                        placeholder="Informe o cargo"
+                        class="w-full rounded-xl border {% if erro_campo == 'cargo_personalizado' %}border-red-400{% else %}border-gray-200{% endif %} bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- STATUS DA CONTA -->
+        <!-- ================================================= -->
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+            <div class="border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700">
+
+                        {{ lucide('shield-check', class='h-5 w-5 text-gray-600 dark:text-gray-300')|safe }}
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-semibold text-gray-900 dark:text-white">
+                            Status da conta
+                        </h2>
+
+                        <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                            Controle se este usuário pode acessar o sistema.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="p-6">
+
+                <label class="flex cursor-pointer items-center justify-between gap-4">
+
+                    <div class="min-w-0">
+
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            Conta ativa
+                        </p>
+
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Usuários ativos podem entrar no sistema normalmente.
+                        </p>
+
+                    </div>
+
+
+                    <div class="relative shrink-0">
+
+                        <input
+                            type="checkbox"
+                            name="ativo"
+                            value="1"
+                            class="peer sr-only"
+                            {% if formulario.get('ativo', usuario.ativo) %}checked{% endif %}
+                        >
+
+                        <div class="h-6 w-11 rounded-full bg-gray-200 transition peer-checked:bg-indigo-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 dark:bg-gray-700"></div>
+
+                        <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></div>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PERMISSÕES -->
+        <!-- ================================================= -->
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+            <div class="border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700">
+
+                        {{ lucide('key-round', class='h-5 w-5 text-gray-600 dark:text-gray-300')|safe }}
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-semibold text-gray-900 dark:text-white">
+                            Permissões de acesso
+                        </h2>
+
+                        <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                            Defina quais áreas este usuário poderá utilizar.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+
+
+                <!-- PACIENTES -->
+
+                <label class="flex cursor-pointer items-center justify-between gap-4 px-6 py-5">
+
+                    <div class="flex min-w-0 items-center gap-4">
+
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+
+                            {{ lucide('users', class='h-5 w-5')|safe }}
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                Pacientes
+                            </p>
+
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Cadastrar, visualizar e gerenciar pacientes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="relative shrink-0">
+
+                        <input
+                            type="checkbox"
+                            name="pode_cadastrar_paciente"
+                            value="1"
+                            class="peer sr-only"
+                            {% if formulario.get('pode_cadastrar_paciente', usuario.pode_cadastrar_paciente) %}checked{% endif %}
+                        >
+
+                        <div class="h-6 w-11 rounded-full bg-gray-200 transition peer-checked:bg-indigo-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 dark:bg-gray-700"></div>
+
+                        <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></div>
+
+                    </div>
+
+                </label>
+
+
+                <!-- CARDÁPIOS -->
+
+                <label class="flex cursor-pointer items-center justify-between gap-4 px-6 py-5">
+
+                    <div class="flex min-w-0 items-center gap-4">
+
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+
+                            {{ lucide('utensils', class='h-5 w-5')|safe }}
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                Cardápios
+                            </p>
+
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Montar e gerenciar cardápios nutricionais.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="relative shrink-0">
+
+                        <input
+                            type="checkbox"
+                            name="pode_montar_cardapio"
+                            value="1"
+                            class="peer sr-only"
+                            {% if formulario.get('pode_montar_cardapio', usuario.pode_montar_cardapio) %}checked{% endif %}
+                        >
+
+                        <div class="h-6 w-11 rounded-full bg-gray-200 transition peer-checked:bg-indigo-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 dark:bg-gray-700"></div>
+
+                        <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></div>
+
+                    </div>
+
+                </label>
+
+
+                <!-- FINANCEIRO -->
+
+                <label class="flex cursor-pointer items-center justify-between gap-4 px-6 py-5">
+
+                    <div class="flex min-w-0 items-center gap-4">
+
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+
+                            {{ lucide('wallet', class='h-5 w-5')|safe }}
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                Financeiro
+                            </p>
+
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Visualizar informações e recursos financeiros.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="relative shrink-0">
+
+                        <input
+                            type="checkbox"
+                            name="pode_ver_financeiro"
+                            value="1"
+                            class="peer sr-only"
+                            {% if formulario.get('pode_ver_financeiro', usuario.pode_ver_financeiro) %}checked{% endif %}
+                        >
+
+                        <div class="h-6 w-11 rounded-full bg-gray-200 transition peer-checked:bg-indigo-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 dark:bg-gray-700"></div>
+
+                        <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></div>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- INFORMAÇÕES DA CONTA -->
+        <!-- ================================================= -->
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+            <div class="border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700">
+
+                        {{ lucide('info', class='h-5 w-5 text-gray-600 dark:text-gray-300')|safe }}
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-semibold text-gray-900 dark:text-white">
+                            Informações da conta
+                        </h2>
+
+                        <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                            Informações de registro e utilização.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="grid gap-5 p-6 sm:grid-cols-2">
+
+                <!-- DATA DE CADASTRO -->
+
+                <div>
+
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                        Data de cadastro
+                    </p>
+
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+
+                        {% if usuario.data_cadastro %}
+
+                            {{ usuario.data_cadastro.strftime('%d/%m/%Y às %H:%M') }}
+
+                        {% else %}
+
+                            Não informado
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+
+                <!-- ÚLTIMO ACESSO -->
+
+                <div>
+
+                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                        Último acesso
+                    </p>
+
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+
+                        {% if usuario.ultimo_acesso %}
+
+                            {{ usuario.ultimo_acesso.strftime('%d/%m/%Y às %H:%M') }}
+
+                        {% else %}
+
+                            Nunca acessou
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- AÇÕES -->
+        <!-- ================================================= -->
+
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
+
+            <a
+                href="{{ url_for('usuarios.gerenciar_usuarios') }}"
+                class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+                Cancelar
+            </a>
+
+            <button
+                type="submit"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+            >
+                {{ lucide('save', class='h-4 w-4')|safe }}
+                Salvar alterações
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
+
+{% endblock %}

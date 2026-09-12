@@ -1,0 +1,521 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Lista de Pacientes : Nutrir Melhor{% endblock %}
+
+{% block conteudo %}
+
+<div class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-7">
+
+    <!-- ===================================================== -->
+    <!-- CABEÇALHO -->
+    <!-- ===================================================== -->
+
+    <div class="mb-7">
+
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+            <div>
+
+                <h2 class="text-[22px] font-semibold tracking-tight text-[var(--color-text)]">
+                    Pacientes
+                </h2>
+
+                <p class="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">
+                    Gerencie os prontuários e planos alimentares da clínica.
+                </p>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- BUSCA + NOVO PACIENTE -->
+            <!-- ================================================= -->
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+
+                <!-- BUSCA -->
+
+                <form id="form-busca-pacientes" method="GET" action="{{ url_for('pacientes.listar_pacientes') }}"
+                    class="relative">
+
+                    <div class="relative">
+
+                        {{ lucide(
+                        'search',
+                        class='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2
+                        text-[var(--color-text-subtle)]'
+                        )|safe }}
+
+                        <input type="search" id="campo-busca-pacientes" name="busca" value="{{ busca }}"
+                            placeholder="Buscar paciente..." autocomplete="off" spellcheck="false"
+                            class="h-9 w-full sm:w-64 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] pl-9 pr-9 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10" />
+
+                        {% if busca %}
+
+                        <button type="button" id="limpar-busca-pacientes"
+                            class="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[var(--color-text-subtle)] transition hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                            title="Limpar busca" aria-label="Limpar busca">
+                            {{ lucide('x', class='h-3.5 w-3.5')|safe }}
+                        </button>
+
+                        {% endif %}
+
+                    </div>
+
+                </form>
+
+
+                <!-- NOVO PACIENTE -->
+
+                <a href="{{ url_for('pacientes.cadastrar_paciente_tela') }}"
+                    class="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-3.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[var(--color-primary-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20">
+                    {{ lucide('user-plus', class='h-4 w-4')|safe }}
+                    Novo paciente
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- ÁREA ATUALIZÁVEL -->
+    <!-- ===================================================== -->
+
+    <div id="area-pacientes">
+
+        <div
+            class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+
+            <div class="w-full overflow-x-auto">
+
+                <table class="w-full text-sm">
+
+                    <!-- ================================================= -->
+                    <!-- CABEÇALHO DA TABELA -->
+                    <!-- ================================================= -->
+
+                    <thead>
+
+                        <tr class="border-b border-[var(--color-border)] bg-[var(--color-surface-muted)]">
+
+                            <th
+                                class="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--color-text-subtle)]">
+                                Paciente
+                            </th>
+
+                            <th
+                                class="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--color-text-subtle)]">
+                                Telefone
+                            </th>
+
+                            <th
+                                class="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--color-text-subtle)] whitespace-nowrap">
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- ================================================= -->
+                    <!-- CORPO DA TABELA -->
+                    <!-- ================================================= -->
+
+                    <tbody class="divide-y divide-[var(--color-border-subtle)]">
+
+                        {% for paciente in todos_pacientes %}
+
+                        <tr class="group transition-colors duration-150 hover:bg-[var(--color-surface-muted)]">
+
+                            <!-- ================================================= -->
+                            <!-- PACIENTE -->
+                            <!-- ================================================= -->
+
+                            <td class="px-5 py-3">
+
+                                <div class="min-w-0">
+
+                                    <span class="block truncate text-sm font-semibold text-[var(--color-text)]">
+                                        {{ paciente.nome }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- ================================================= -->
+                            <!-- TELEFONE -->
+                            <!-- ================================================= -->
+
+                            <td class="px-5 py-3 whitespace-nowrap">
+
+                                {% if paciente.telefone %}
+
+                                <span class="text-sm text-[var(--color-text-muted)]">
+                                    {{ paciente.telefone }}
+                                </span>
+
+                                {% else %}
+
+                                <span class="text-xs text-[var(--color-text-subtle)]">
+                                    Não informado
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ================================================= -->
+                            <!-- AÇÕES -->
+                            <!-- ================================================= -->
+
+                            <td class="px-5 py-3">
+
+                                <div class="flex items-center justify-end gap-1.5">
+
+                                    <!-- PRONTUÁRIO -->
+
+                                    <a href="{{ url_for(
+                                            'pacientes.gerenciar_paciente',
+                                            paciente_id=paciente.id
+                                        ) }}" title="Abrir prontuário"
+                                        aria-label="Abrir prontuário de {{ paciente.nome }}"
+                                        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10">
+
+                                        {{ lucide(
+                                        'clipboard-list',
+                                        class='h-3.5 w-3.5'
+                                        )|safe }}
+
+                                        Prontuário
+
+                                    </a>
+
+
+                                    <!-- PRESCREVER -->
+
+                                    <a href="/montar/cardapio?paciente_id={{ paciente.id }}"
+                                        title="Prescrever plano alimentar"
+                                        aria-label="Prescrever plano alimentar para {{ paciente.nome }}"
+                                        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20">
+
+                                        {{ lucide(
+                                        'utensils',
+                                        class='h-3.5 w-3.5'
+                                        )|safe }}
+
+                                        Prescrever
+
+                                    </a>
+
+
+                                    <!-- EDITAR -->
+
+                                    <a href="{{ url_for(
+                                            'pacientes.editar_paciente',
+                                            paciente_id=paciente.id,
+                                            origem='lista',
+                                            busca=busca,
+                                            pagina=pagina,
+                                            por_pagina=por_pagina
+                                        ) }}" title="Editar paciente" aria-label="Editar paciente {{ paciente.nome }}"
+                                        data-paciente-editar="{{ paciente.id }}"
+                                        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10">
+
+                                        {{ lucide(
+                                        'pencil',
+                                        class='h-3.5 w-3.5'
+                                        )|safe }}
+
+                                        Editar
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <!-- ================================================= -->
+                        <!-- NENHUM RESULTADO -->
+                        <!-- ================================================= -->
+
+                        <tr>
+
+                            <td colspan="3" class="px-6 py-14 text-center">
+
+                                <div class="flex flex-col items-center justify-center">
+
+                                    <div
+                                        class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-surface-muted)] text-[var(--color-text-subtle)]">
+
+                                        {% if busca %}
+
+                                        {{ lucide(
+                                        'search-x',
+                                        class='h-6 w-6'
+                                        )|safe }}
+
+                                        {% else %}
+
+                                        {{ lucide(
+                                        'users-round',
+                                        class='h-6 w-6'
+                                        )|safe }}
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    {% if busca %}
+
+                                    <p class="text-sm font-medium text-[var(--color-text-muted)]">
+                                        Nenhum paciente encontrado.
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-[var(--color-text-subtle)]">
+                                        Não encontramos resultados para
+                                        <span class="font-medium">
+                                            "{{ busca }}"
+                                        </span>.
+                                    </p>
+
+                                    {% else %}
+
+                                    <p class="text-sm font-medium text-[var(--color-text-muted)]">
+                                        Nenhum paciente cadastrado até o momento.
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-[var(--color-text-subtle)]">
+                                        Cadastre um novo paciente para começar.
+                                    </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ===================================================== -->
+            <!-- RODAPÉ -->
+            <!-- ===================================================== -->
+
+            <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-muted)] px-5 py-3.5">
+
+                <!-- ================================================= -->
+                <!-- LADO ESQUERDO -->
+                <!-- ================================================= -->
+
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+
+                    <!-- INFORMAÇÕES -->
+
+                    <p class="text-xs text-[var(--color-text-subtle)]">
+
+                        {% if total_pacientes > 0 %}
+
+                        Exibindo
+
+                        <span class="font-medium text-[var(--color-text-muted)]">
+                            {{ inicio }}–{{ fim }}
+                        </span>
+
+                        de
+
+                        <span class="font-medium text-[var(--color-text-muted)]">
+                            {{ total_pacientes }}
+                        </span>
+
+                        pacientes
+
+                        {% if busca %}
+
+                        <span class="text-[var(--color-text-subtle)]">
+                            ·
+                        </span>
+
+                        busca por
+
+                        <span class="font-medium text-[var(--color-text-muted)]">
+                            "{{ busca }}"
+                        </span>
+
+                        {% endif %}
+
+                        {% else %}
+
+                        Nenhum paciente para exibir.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <!-- ================================================= -->
+                    <!-- SELECT DE QUANTIDADE -->
+                    <!-- ================================================= -->
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="text-xs text-[var(--color-text-subtle)]">
+                            Exibir
+                        </span>
+
+                        <select id="quantidade-pacientes" aria-label="Quantidade de pacientes por página"
+                            class="h-8 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2 text-xs font-medium text-[var(--color-text-muted)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10">
+
+                            <option value="10" {% if por_pagina==10 %}selected{% endif %}>
+                                10
+                            </option>
+
+                            <option value="20" {% if por_pagina==20 %}selected{% endif %}>
+                                20
+                            </option>
+
+                            <option value="50" {% if por_pagina==50 %}selected{% endif %}>
+                                50
+                            </option>
+
+                            <option value="100" {% if por_pagina==100 %}selected{% endif %}>
+                                100
+                            </option>
+
+                        </select>
+
+                        <span class="text-xs text-[var(--color-text-subtle)]">
+                            por página
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- LADO DIREITO / PAGINAÇÃO -->
+                <!-- ================================================= -->
+
+                {% if total_paginas > 1 %}
+
+                <div class="flex items-center gap-2">
+
+                    <!-- ANTERIOR -->
+
+                    {% if pagina > 1 %}
+
+                    <a href="{{ url_for(
+                                    'pacientes.listar_pacientes',
+                                    pagina=pagina - 1,
+                                    busca=busca,
+                                    por_pagina=por_pagina
+                                ) }}"
+                        class="link-paginacao inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 text-xs font-medium text-[var(--color-text-muted)] shadow-sm transition hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10">
+
+                        {{ lucide(
+                        'chevron-left',
+                        class='h-3.5 w-3.5'
+                        )|safe }}
+
+                        Anterior
+
+                    </a>
+
+                    {% else %}
+
+                    <button type="button"
+                        class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 text-xs font-medium text-[var(--color-text-subtle)] opacity-50 shadow-sm"
+                        disabled>
+
+                        {{ lucide(
+                        'chevron-left',
+                        class='h-3.5 w-3.5'
+                        )|safe }}
+
+                        Anterior
+
+                    </button>
+
+                    {% endif %}
+
+
+                    <!-- PÁGINA ATUAL -->
+
+                    <span
+                        class="inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-xs font-medium text-[var(--color-text-muted)]">
+                        {{ pagina }} / {{ total_paginas }}
+                    </span>
+
+
+                    <!-- PRÓXIMO -->
+
+                    {% if pagina < total_paginas %} <a href="{{ url_for(
+                                    'pacientes.listar_pacientes',
+                                    pagina=pagina + 1,
+                                    busca=busca,
+                                    por_pagina=por_pagina
+                                ) }}"
+                        class="link-paginacao inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 text-xs font-medium text-[var(--color-text-muted)] shadow-sm transition hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10">
+
+                        Próximo
+
+                        {{ lucide(
+                        'chevron-right',
+                        class='h-3.5 w-3.5'
+                        )|safe }}
+
+                        </a>
+
+                        {% else %}
+
+                        <button type="button"
+                            class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 text-xs font-medium text-[var(--color-text-subtle)] opacity-50"
+                            disabled>
+
+                            Próximo
+
+                            {{ lucide(
+                            'chevron-right',
+                            class='h-3.5 w-3.5'
+                            )|safe }}
+
+                        </button>
+
+                        {% endif %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/paciente.js') }}"></script>
+
+{% endblock %}

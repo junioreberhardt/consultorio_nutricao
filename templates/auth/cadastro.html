@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cadastro de Usuário : Nutrir Melhor</title>
+
+		<!-- Link da Google Fonts adicionado para a fonte Inter funcionar -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- 1. Motor do Tailwind CSS Oficial -->
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<script>
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						fontFamily: {
+							sans: ["Inter", "sans-serif"],
+						},
+					},
+				},
+			}
+		</script>
+	</head>
+	<body
+		class="bg-gray-50/50 text-gray-800 h-full flex items-center justify-center p-4"
+	>
+		<!-- CORREÇÃO AQUI: Mudamos 'p-8my-6' para 'p-8 my-6' separados por espaço -->
+		<div
+			class="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm p-8 my-6"
+		>
+			<!-- Cabeçalho com Ícone do Lucide -->
+			<div class="text-center mb-7">
+				<div
+					class="inline-flex bg-emerald-50 text-emerald-600 p-3 rounded-xl mb-3"
+				>
+					<i data-lucide="user-plus" class="w-6 h-6"></i>
+				</div>
+				<h2 class="text-xl font-bold text-gray-800">Solicitar Acesso</h2>
+				<p class="text-sm text-gray-400 mt-1">
+					Crie sua conta para ter acesso ao sistema
+				</p>
+			</div>
+
+			<!-- Formulário de Cadastro -->
+			<form
+				action="{{ url_for('usuarios.cadastrar_usuario') }}"
+				method="POST"
+				class="space-y-4"
+			>
+				<!-- Campo: Nome Completo -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>Nome Completo</label
+					>
+					<div class="relative">
+						<input
+							type="text"
+							name="nome"
+							required
+							placeholder="Ex: Ana Souza"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="contact" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Campo: E-mail Corporativo -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>E-mail Corporativo</label
+					>
+					<div class="relative">
+						<input
+							type="email"
+							name="email"
+							required
+							placeholder="Ex: ana@consultorio.com"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="mail" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Campo: Nome de Usuário -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>Nome de Usuário</label
+					>
+					<div class="relative">
+						<input
+							type="text"
+							name="nome_usuario"
+							required
+							placeholder="Ex: ana.sec"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Campo: Senha -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>Senha</label
+					>
+					<div class="relative">
+						<input
+							type="password"
+							name="senha"
+							required
+							placeholder="Crie uma senha forte"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="lock" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Botão de Envio (Estilo Sucesso) -->
+				<button
+					type="submit"
+					class="w-full mt-2 py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-transparent bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+				>
+					Enviar Solicitação
+				</button>
+			</form>
+
+			<!-- Link para Voltar -->
+			<div class="mt-6 text-center text-sm text-gray-400">
+				<a
+					href="{{ url_for('usuarios.login') }}"
+					class="inline-flex items-center gap-x-1.5 text-emerald-600 hover:text-emerald-700 font-medium transition"
+				>
+					<i data-lucide="arrow-left" class="w-4 h-4"></i>
+					Voltar para o Login
+				</a>
+			</div>
+		</div>
+
+		<!-- Script Corrigido e Garantido do Lucide Icons -->
+		<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+		<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+{
+	"editor.formatOnSave": true,
+
+	"[html]": {
+		"editor.formatOnSave": false
+	},
+
+	"[jinja-html]": {
+		"editor.formatOnSave": false
+	},
+
+	"files.associations": {
+		"*.html": "jinja-html"
+	}
+}

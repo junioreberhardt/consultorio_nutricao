@@ -1,0 +1,357 @@
+{% extends 'base.html' %} {% block titulo %}Meu Perfil : Nutrir Melhor{%
+endblock %} {% block conteudo %}
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+	<!-- Cabeçalho -->
+	<div class="mb-6">
+		<h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+			Meu perfil
+		</h1>
+
+		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+			Gerencie suas informações pessoais e sua foto de perfil.
+		</p>
+	</div>
+
+	<!-- Mensagens -->
+	{% with mensagens = get_flashed_messages(with_categories=true) %} {% if
+	mensagens %}
+
+	<div class="mb-4 space-y-2">
+		{% for categoria, mensagem in mensagens %} {% if categoria == 'sucesso' %}
+
+		<!-- Sucesso -->
+		<div
+			class="flex items-center gap-x-2 px-4 py-3 text-sm rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300"
+			role="alert"
+		>
+			{{ lucide('circle-check', style='width: 16px; height: 16px; flex-shrink:
+			0;')|safe }}
+
+			<span>{{ mensagem }}</span>
+		</div>
+
+		{% else %}
+
+		<!-- Erro -->
+		<div
+			class="flex items-center gap-x-2 px-4 py-3 text-sm rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300"
+			role="alert"
+		>
+			{{ lucide('circle-alert', style='width: 16px; height: 16px; flex-shrink:
+			0;')|safe }}
+
+			<span>{{ mensagem }}</span>
+		</div>
+
+		{% endif %} {% endfor %}
+	</div>
+
+	{% endif %} {% endwith %}
+
+	<!-- Card -->
+	<div
+		class="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700"
+	>
+		<!-- Foto -->
+		<div
+			class="flex flex-col items-center px-6 py-8 border-b border-gray-100 dark:border-gray-700"
+		>
+			<div class="relative w-28 h-28 mb-4">
+				{% if current_user.foto_perfil %}
+
+				<img
+					src="{{ url_for('static', filename=current_user.foto_perfil) }}"
+					alt="{{ current_user.nome }}"
+					class="w-full h-full object-cover rounded-full border-4 border-white shadow-md dark:border-gray-800"
+				/>
+
+				{% else %}
+
+				<div
+					class="flex items-center justify-center w-full h-full rounded-full bg-gray-100 text-gray-600 text-2xl font-semibold dark:bg-gray-700 dark:text-gray-200"
+				>
+					{{ current_user.nome.split()[:2] | map('first') | join('') | upper }}
+				</div>
+
+				{% endif %}
+			</div>
+
+			<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+				{{ current_user.nome.split()[:2] | join(' ') }}
+			</h2>
+
+			<p class="text-sm text-gray-500 dark:text-gray-400">
+				@{{ current_user.nome_usuario }}
+			</p>
+
+			<!-- Formulário da foto -->
+			<form
+				action="{{ url_for('usuarios.atualizar_foto_perfil') }}"
+				method="POST"
+				enctype="multipart/form-data"
+				class="mt-5"
+			>
+				<label
+					for="foto"
+					class="inline-flex items-center gap-x-2 px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 transition"
+				>
+					{{ lucide('camera', style='width: 16px; height: 16px;')|safe }}
+
+					<span>Alterar foto</span>
+				</label>
+
+				<input
+					type="file"
+					id="foto"
+					name="foto"
+					accept="image/jpeg,image/png,image/webp"
+					class="hidden"
+					data-auto-submit
+				/>
+			</form>
+
+			<p class="mt-2 text-xs text-gray-400">
+				JPG, JPEG, PNG ou WEBP · máximo 5 MB
+			</p>
+		</div>
+
+		<!-- Informações pessoais -->
+		<div class="px-6 py-6">
+			<h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">
+				Informações pessoais
+			</h3>
+
+			<form
+				action="{{ url_for('usuarios.editar_perfil') }}"
+				method="POST"
+				class="space-y-4"
+			>
+				<!-- Nome -->
+				<div>
+					<label
+						for="nome"
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Nome
+					</label>
+
+					<input
+						type="text"
+						id="nome"
+						name="nome"
+						value="{{ current_user.nome }}"
+						required
+						class="block w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200"
+					/>
+				</div>
+
+				<!-- E-mail -->
+				<div>
+					<label
+						for="email"
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						E-mail
+					</label>
+
+					<input
+						type="email"
+						id="email"
+						name="email"
+						value="{{ current_user.email }}"
+						required
+						class="block w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200"
+					/>
+				</div>
+
+				<!-- Botão -->
+				<div class="flex justify-end pt-2">
+					<button
+						type="submit"
+						class="inline-flex items-center gap-x-2 px-4 py-2.5 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition"
+					>
+						{{ lucide('save', style='width: 16px; height: 16px;')|safe }}
+
+						<span>Salvar alterações</span>
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Conta -->
+		<div class="px-6 py-6 border-t border-gray-100 dark:border-gray-700">
+			<h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4">
+				Conta
+			</h3>
+
+			<div class="space-y-4">
+				<!-- Nome de usuário -->
+				<div>
+					<label
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Nome de usuário
+					</label>
+
+					<div
+						class="flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900 dark:border-gray-700"
+					>
+						<span class="text-sm text-gray-700 dark:text-gray-200">
+							@{{ current_user.nome_usuario }}
+						</span>
+
+						{{ lucide('lock', style='width: 14px; height: 14px; color:
+						currentColor;')|safe }}
+					</div>
+				</div>
+
+				<!-- Cargo -->
+				<div>
+					<label
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Cargo
+					</label>
+
+					<div
+						class="flex items-center justify-between px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900 dark:border-gray-700"
+					>
+						<span class="text-sm text-gray-700 dark:text-gray-200">
+							{{ current_user.cargo }}
+						</span>
+
+						{{ lucide('shield-check', style='width: 14px; height: 14px; color:
+						currentColor;')|safe }}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Segurança -->
+		<div class="px-6 py-6 border-t border-gray-100 dark:border-gray-700">
+			<h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-1">
+				Segurança
+			</h3>
+
+			<p class="text-xs text-gray-500 dark:text-gray-400 mb-5">
+				Altere sua senha para manter sua conta protegida.
+			</p>
+
+			<form
+				action="{{ url_for('usuarios.alterar_senha') }}"
+				method="POST"
+				class="space-y-4"
+			>
+				<!-- Senha atual -->
+				<div>
+					<label
+						for="senha_atual"
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Senha atual
+					</label>
+
+					<div class="relative">
+						<input
+							type="password"
+							id="senha_atual"
+							name="senha_atual"
+							required
+							autocomplete="current-password"
+							class="block w-full px-3 py-2.5 pr-10 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200"
+						/>
+
+						<button
+							type="button"
+							data-toggle-senha
+							data-target="senha_atual"
+							class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+							aria-label="Mostrar senha"
+						>
+							{{ lucide('eye', style='width: 16px; height: 16px;')|safe }}
+						</button>
+					</div>
+				</div>
+
+				<!-- Nova senha -->
+				<div>
+					<label
+						for="nova_senha"
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Nova senha
+					</label>
+
+					<div class="relative">
+						<input
+							type="password"
+							id="nova_senha"
+							name="nova_senha"
+							required
+							autocomplete="new-password"
+							class="block w-full px-3 py-2.5 pr-10 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200"
+						/>
+
+						<button
+							type="button"
+							data-toggle-senha
+							data-target="nova_senha"
+							class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+							aria-label="Mostrar senha"
+						>
+							{{ lucide('eye', style='width: 16px; height: 16px;')|safe }}
+						</button>
+					</div>
+				</div>
+
+				<!-- Confirmar senha -->
+				<div>
+					<label
+						for="confirmar_senha"
+						class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5"
+					>
+						Confirmar nova senha
+					</label>
+
+					<div class="relative">
+						<input
+							type="password"
+							id="confirmar_senha"
+							name="confirmar_senha"
+							required
+							autocomplete="new-password"
+							class="block w-full px-3 py-2.5 pr-10 text-sm bg-white border border-gray-200 rounded-lg text-gray-800 focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200"
+						/>
+
+						<button
+							type="button"
+							data-toggle-senha
+							data-target="confirmar_senha"
+							class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+							aria-label="Mostrar senha"
+						>
+							{{ lucide('eye', style='width: 16px; height: 16px;')|safe }}
+						</button>
+					</div>
+				</div>
+
+				<!-- Botão -->
+				<div class="flex justify-end pt-2">
+					<button
+						type="submit"
+						class="inline-flex items-center gap-x-2 px-4 py-2.5 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition"
+					>
+						{{ lucide('key-round', style='width: 16px; height: 16px;')|safe }}
+
+						<span>Alterar senha</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="{{ url_for('static', filename='js/senha.js') }}"></script>
+
+{% endblock %}

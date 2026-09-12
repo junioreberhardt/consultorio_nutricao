@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login : Nutrir Melhor</title>
+
+		<!-- Link da Google Fonts adicionado para a fonte Inter funcionar -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- 1. Motor do Tailwind CSS Oficial -->
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<script>
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						fontFamily: {
+							sans: ["Inter", "sans-serif"],
+						},
+					},
+				},
+			}
+		</script>
+	</head>
+	<body
+		class="bg-gray-50/50 text-gray-800 h-full flex items-center justify-center p-4"
+	>
+		<!-- Card de Login Centralizado e Minimalista -->
+		<div
+			class="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm p-8"
+		>
+			<!-- Cabeçalho do Card com Ícone do Lucide -->
+			<div class="text-center mb-7">
+				<!-- O fundo verde esmeralda suave se mantém -->
+				<div
+					class="inline-flex bg-emerald-50 text-emerald-600 p-3 rounded-xl mb-3"
+				>
+					<!-- Mudamos de shield-check para lock-keyhole que é 100% compatível e elegante -->
+					<i data-lucide="lock-keyhole" class="w-6 h-6"></i>
+				</div>
+				<h2 class="text-xl font-bold text-gray-800">Acesso ao Sistema</h2>
+				<p class="text-sm text-gray-400 mt-1">
+					Insira suas credenciais para acessar o painel
+				</p>
+			</div>
+
+			<!-- Sistema de Alertas do Flask (Flash Messages) -->
+			{% with messages = get_flashed_messages(with_categories=true) %} {% if
+			messages %} {% for category, message in messages %} {% if category ==
+			'info' %}
+			<!-- Alerta de Informação (Azul Suave) -->
+			<div
+				class="flex items-center gap-x-2 bg-blue-50 border border-blue-100 text-blue-700 text-sm p-3 rounded-xl mb-5"
+			>
+				<i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+				<span>{{ message }}</span>
+			</div>
+			{% else %}
+			<!-- Alerta de Erro/Perigo (Vermelho Suave) -->
+			<div
+				class="flex items-center gap-x-2 bg-red-50 border border-red-100 text-red-700 text-sm p-3 rounded-xl mb-5"
+			>
+				<i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+				<span>{{ message }}</span>
+			</div>
+			{% endif %} {% endfor %} {% endif %} {% endwith %}
+
+			<!-- Formulário -->
+			<form
+				action="{{ url_for('usuarios.login') }}"
+				method="POST"
+				class="space-y-5"
+			>
+				<!-- Campo: Usuário -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>Nome de Usuário</label
+					>
+					<div class="relative">
+						<input
+							type="text"
+							name="nome_usuario"
+							required
+							placeholder="Ex: admin"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Campo: Senha -->
+				<div>
+					<label class="block text-sm font-medium text-gray-600 mb-1.5"
+						>Senha</label
+					>
+					<div class="relative">
+						<input
+							type="password"
+							name="senha"
+							required
+							placeholder="Sua senha"
+							class="py-2.5 px-4 pl-10 block w-full bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white focus:outline-none transition disabled:opacity-50"
+						/>
+						<div
+							class="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-3.5"
+						>
+							<i data-lucide="lock" class="w-4 h-4 text-gray-400"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Botão Entrar -->
+				<button
+					type="submit"
+					class="w-full mt-2 py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-transparent bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition"
+				>
+					Entrar
+				</button>
+			</form>
+
+			<!-- Links Inferiores -->
+			<div class="mt-6 text-center text-sm text-gray-400">
+				Não tem uma conta?
+				<a
+					href="{{ url_for('usuarios.cadastrar_usuario') }}"
+					class="text-emerald-600 hover:text-emerald-700 font-medium transition"
+				>
+					Cadastre-se aqui
+				</a>
+			</div>
+		</div>
+
+		<!-- Scripts Oficiais do Lucide para Renderizar os Ícones -->
+		<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+		<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+	</body>
+</html>
