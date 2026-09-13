@@ -1,0 +1,147 @@
+    <!-- ===================================================== -->
+    <!-- DIETAS -->
+    <!-- ===================================================== -->
+
+    <section id="dietas-passadas" role="tabpanel" class="hidden
+           bg-[var(--color-surface)]
+           border border-[var(--color-border)]
+           rounded-2xl shadow-sm p-6">
+
+        <div class="mb-6">
+
+            <h3 class="text-base font-semibold text-[var(--color-text)]">
+                Dietas
+            </h3>
+
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">
+                Histórico dos planos alimentares prescritos.
+            </p>
+
+        </div>
+
+
+        {% if paciente.planos_alimentares %}
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm">
+
+                <thead>
+
+                    <tr class="border-b border-[var(--color-border)]">
+
+                        <th class="text-left py-3 pr-4
+                                   text-[11px] font-medium uppercase tracking-wide
+                                   text-[var(--color-text-subtle)]">
+                            Data
+                        </th>
+
+                        <th class="text-left py-3 px-4
+                                   text-[11px] font-medium uppercase tracking-wide
+                                   text-[var(--color-text-subtle)]">
+                            Plano
+                        </th>
+
+                        <th class="text-left py-3 px-4
+                                   text-[11px] font-medium uppercase tracking-wide
+                                   text-[var(--color-text-subtle)]">
+                            Meta calórica
+                        </th>
+
+                        <th class="text-left py-3 pl-4
+                                   text-[11px] font-medium uppercase tracking-wide
+                                   text-[var(--color-text-subtle)]">
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-[var(--color-border-subtle)]">
+
+                    {% for plano in paciente.planos_alimentares %}
+
+                    <tr>
+
+                        <td class="py-3 pr-4 text-[var(--color-text)]">
+
+                            {{ plano.data_criacao.strftime('%d/%m/%Y') if plano.data_criacao else '—' }}
+
+                        </td>
+
+
+                        <td class="py-3 px-4 text-[var(--color-text)]">
+
+                            {{ plano.nome_plano or 'Plano alimentar' }}
+
+                        </td>
+
+
+                        <td class="py-3 px-4 text-[var(--color-text)]">
+
+                            {% if plano.meta_calorica is not none %}
+
+                            {{ plano.meta_calorica }} kcal
+
+                            {% else %}
+
+                            —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="py-3 pl-4">
+
+                            <span class="inline-flex items-center rounded-full
+                                           px-2.5 py-1 text-xs font-medium
+                                           {% if plano.status == 'Ativo' %}
+                                               bg-emerald-50 text-emerald-700
+                                               dark:bg-emerald-950/40 dark:text-emerald-400
+                                           {% else %}
+                                               bg-slate-100 text-slate-600
+                                               dark:bg-slate-800 dark:text-slate-300
+                                           {% endif %}">
+
+                                {{ plano.status or '—' }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="py-12 text-center
+                   border border-dashed
+                   border-[var(--color-border)]
+                   rounded-xl">
+
+            {{ lucide('clipboard-list', style='width: 22px; height: 22px; margin: 0 auto; color:
+            var(--color-text-subtle);')|safe }}
+
+            <p class="mt-3 text-sm font-medium text-[var(--color-text)]">
+                Nenhuma dieta registrada
+            </p>
+
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">
+                Os planos alimentares prescritos aparecerão aqui.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>

@@ -1,0 +1,71 @@
+    <!-- ===================================================== -->
+    <!-- ABAS -->
+    <!-- ===================================================== -->
+
+    <div class="border-b border-[var(--color-border)] mb-6">
+
+        <nav class="flex items-center gap-5 overflow-x-auto" aria-label="Abas do prontuário" role="tablist">
+
+            <button type="button" data-hs-tab="#dados-gerais" aria-controls="dados-gerais" aria-selected="true"
+                role="tab" class="inline-flex items-center gap-2 py-3.5
+                   border-b-2 border-transparent
+                   text-sm font-medium whitespace-nowrap
+                   text-[var(--color-text-muted)]
+                   hover:text-[var(--color-primary)]
+                   focus:outline-none transition">
+
+                {{ lucide('user-round', style='width: 16px; height: 16px;')|safe }}
+
+                Dados gerais
+
+            </button>
+
+
+            <button type="button" data-hs-tab="#avaliacao-fisica" aria-controls="avaliacao-fisica" aria-selected="false"
+                role="tab" class="inline-flex items-center gap-2 py-3.5
+                   border-b-2 border-transparent
+                   text-sm font-medium whitespace-nowrap
+                   text-[var(--color-text-muted)]
+                   hover:text-[var(--color-primary)]
+                   focus:outline-none transition">
+
+                {{ lucide('ruler', style='width: 16px; height: 16px;')|safe }}
+
+                Avaliação física
+
+            </button>
+
+
+            <button type="button" data-hs-tab="#dietas-passadas" aria-controls="dietas-passadas" aria-selected="false"
+                role="tab" class="inline-flex items-center gap-2 py-3.5
+                   border-b-2 border-transparent
+                   text-sm font-medium whitespace-nowrap
+                   text-[var(--color-text-muted)]
+                   hover:text-[var(--color-primary)]
+                   focus:outline-none transition">
+
+                {{ lucide('clipboard-list', style='width: 16px; height: 16px;')|safe }}
+
+                Dietas
+
+            </button>
+
+
+            <button type="button" data-hs-tab="#anamnese" aria-controls="anamnese" aria-selected="false" role="tab"
+                class="inline-flex items-center gap-2 py-3.5
+                   border-b-2 border-transparent
+                   text-sm font-medium whitespace-nowrap
+                   text-[var(--color-text-muted)]
+                   hover:text-[var(--color-primary)]
+                   focus:outline-none transition">
+
+                {{ lucide('notebook-pen', style='width: 16px; height: 16px;')|safe }}
+
+                Anamnese
+
+            </button>
+
+        </nav>
+
+    </div>
+

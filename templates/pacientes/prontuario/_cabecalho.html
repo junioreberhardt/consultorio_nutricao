@@ -1,0 +1,71 @@
+<!-- ===================================================== -->
+<!-- CABEÇALHO DO PRONTUÁRIO -->
+<!-- ===================================================== -->
+
+<div class="mb-7">
+
+    <div class="mb-4">
+
+        <a href="{{ url_for('pacientes.listar_pacientes') }}" class="inline-flex items-center gap-1.5
+                   text-xs font-normal
+                   text-[var(--color-text-muted)]
+                   hover:text-[var(--color-primary)]
+                   transition">
+
+            {{ lucide(
+            'arrow-left',
+            style='width: 16px; height: 16px;'
+            )|safe }}
+
+            Pacientes
+
+        </a>
+
+    </div>
+
+
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+        <div>
+
+            <h2 class="text-[22px] font-semibold tracking-tight text-[var(--color-text)]">
+
+                <span data-nome-paciente>
+                    {{ paciente.nome }}
+                </span>
+
+                <span class="font-normal text-[var(--color-text-muted)]">
+                    ·
+                    <span data-idade-paciente>
+                        {{ paciente.idade_atual }} anos
+                    </span>
+                </span>
+
+            </h2>
+
+            <p class="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">
+                Prontuário clínico e acompanhamento nutricional.
+            </p>
+
+        </div>
+
+
+        <a href="/montar/cardapio?paciente_id={{ paciente.id }}" class="inline-flex items-center justify-center gap-2
+                   h-9 px-4 rounded-lg
+                   bg-[var(--color-primary)]
+                   text-sm font-medium text-white
+                   hover:bg-[var(--color-primary-hover)]
+                   transition shadow-sm shrink-0">
+
+            {{ lucide(
+            'utensils',
+            style='width: 16px; height: 16px;'
+            )|safe }}
+
+            Prescrever dieta
+
+        </a>
+
+    </div>
+
+</div>

@@ -1,0 +1,204 @@
+<div id="secao-contato" data-edicao-secao="contato" class="py-6 border-b border-[var(--color-border-subtle)]">
+
+    <!-- VISUALIZAÇÃO -->
+    <div data-modo="visualizacao">
+
+        <div class="flex items-center justify-between gap-4 mb-5">
+
+            <h4 class="text-sm font-semibold text-[var(--color-text)]">
+                Contato
+            </h4>
+
+            <button type="button" data-acao="editar" class="
+                    inline-flex items-center gap-1.5
+                    h-8 px-3
+                    rounded-lg
+                    border border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    text-xs font-medium
+                    text-[var(--color-text-muted)]
+                    hover:text-[var(--color-primary)]
+                    hover:border-[var(--color-primary)]
+                    transition
+                ">
+                {{ lucide('pencil', style='width: 14px; height: 14px;')|safe }}
+                Editar
+            </button>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+
+            <!-- Telefone -->
+            <div>
+
+                <span class="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-subtle)]
+                ">
+                    Telefone
+                </span>
+
+                <span data-campo="telefone" class="
+                        block mt-1.5
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    {{ paciente.telefone or '—' }}
+                </span>
+
+            </div>
+
+
+            <!-- E-mail -->
+            <div>
+
+                <span class="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-subtle)]
+                ">
+                    E-mail
+                </span>
+
+                <span data-campo="email" class="
+                        block mt-1.5
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                        break-words
+                    ">
+                    {{ paciente.email or '—' }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EDIÇÃO -->
+    <form data-modo="edicao" class="hidden">
+
+        <input type="hidden" name="secao" value="contato">
+
+        <div class="flex items-center justify-between gap-4 mb-5">
+
+            <h4 class="text-sm font-semibold text-[var(--color-text)]">
+                Contato
+            </h4>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Telefone -->
+            <div>
+
+                <label for="edicao-telefone" class="
+                        block mb-2
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    Telefone
+                </label>
+
+                <input id="edicao-telefone" type="tel" name="telefone" value="{{ paciente.telefone or '' }}"
+                    autocomplete="tel" inputmode="numeric" maxlength="15" placeholder="(47) 99999-9999" class="
+                        w-full
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3.5 py-2.5
+                        text-sm
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        placeholder:text-[var(--color-text-subtle)]
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    ">
+
+            </div>
+
+
+            <!-- E-mail -->
+            <div>
+
+                <label for="edicao-email" class="
+                        block mb-2
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    E-mail
+                </label>
+
+                <input id="edicao-email" type="email" name="email" value="{{ paciente.email or '' }}"
+                    autocomplete="email" placeholder="paciente@email.com" class="
+                        w-full
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3.5 py-2.5
+                        text-sm
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        placeholder:text-[var(--color-text-subtle)]
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    ">
+
+            </div>
+
+        </div>
+
+
+        <!-- Ações -->
+        <div class="flex justify-end gap-3 mt-5">
+
+            <button type="button" data-acao="cancelar" class="
+                    inline-flex items-center justify-center
+                    h-9 px-4
+                    rounded-lg
+                    border border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    text-sm font-medium
+                    text-[var(--color-text-muted)]
+                    hover:bg-[var(--color-surface-muted)]
+                    hover:text-[var(--color-text)]
+                    transition
+                ">
+                Cancelar
+            </button>
+
+            <button type="submit" data-acao="salvar" class="
+                    inline-flex items-center justify-center
+                    gap-2
+                    h-9 px-4
+                    rounded-lg
+                    bg-[var(--color-primary)]
+                    text-sm font-medium
+                    text-white
+                    shadow-sm
+                    hover:bg-[var(--color-primary-hover)]
+                    transition
+                ">
+                {{ lucide('save', style='width: 15px; height: 15px;')|safe }}
+                Salvar alterações
+            </button>
+
+        </div>
+
+    </form>
+
+</div>

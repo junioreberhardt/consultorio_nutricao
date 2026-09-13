@@ -139,16 +139,20 @@
                         <svg class="flex-shrink-0 w-4 h-4 hs-collapse-open:hidden" xmlns="http://www.w3.org/2000/svg"
                             width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
                             <line x1="3" x2="21" y1="6" y2="6" />
                             <line x1="3" x2="21" y1="12" y2="12" />
-                            <line x1="3" x2="21" y1="18" x2="18" />
+                            <line x1="3" x2="18" y1="18" y2="18" />
+
                         </svg>
 
                         <svg class="hidden flex-shrink-0 w-4 h-4 hs-collapse-open:block"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
                             <path d="M18 6 6 18" />
                             <path d="m6 6 18 18" />
+
                         </svg>
 
                     </button>
@@ -272,19 +276,19 @@
                     <div class="inline-flex relative hs-dropdown [--auto-close:inside]">
 
                         <button id="hs-dropdown-custom-trigger" type="button" class="
-                            inline-flex
-                            items-center
-                            justify-center
-                            w-9
-                            h-9
-                            rounded-full
-                            border
-                            border-[var(--color-border)]
-                            shadow-sm
-                            overflow-hidden
-                            hs-dropdown-toggle
-                            focus:outline-none
-                        " aria-haspopup="menu" aria-expanded="false" aria-label="Menu do usuário">
+                                inline-flex
+                                items-center
+                                justify-center
+                                w-9
+                                h-9
+                                rounded-full
+                                border
+                                border-[var(--color-border)]
+                                shadow-sm
+                                overflow-hidden
+                                hs-dropdown-toggle
+                                focus:outline-none
+                            " aria-haspopup="menu" aria-expanded="false" aria-label="Menu do usuário">
 
                             {% if current_user.foto_perfil %}
 
@@ -392,21 +396,21 @@
                             <!-- TEMA -->
 
                             <button type="button" id="theme-toggle" class="
-                                flex
-                                w-full
-                                gap-x-2.5
-                                items-center
-                                px-3
-                                py-2
-                                text-sm
-                                font-normal
-                                rounded-lg
-                                transition
-                                text-[var(--color-text-muted)]
-                                hover:bg-[var(--color-surface-muted)]
-                                hover:text-[var(--color-text)]
-                                focus:outline-none
-                            " role="menuitem">
+                                    flex
+                                    w-full
+                                    gap-x-2.5
+                                    items-center
+                                    px-3
+                                    py-2
+                                    text-sm
+                                    font-normal
+                                    rounded-lg
+                                    transition
+                                    text-[var(--color-text-muted)]
+                                    hover:bg-[var(--color-surface-muted)]
+                                    hover:text-[var(--color-text)]
+                                    focus:outline-none
+                                " role="menuitem">
 
                                 {{ lucide('moon', style='width: 14px; height: 14px;')|safe }}
 
@@ -437,8 +441,11 @@
                                 hover:text-[var(--color-text)]
                                 focus:outline-none
                             " role="menuitem">
+
                                 {{ lucide('log-out', style='width: 14px; height: 14px;')|safe }}
+
                                 Sair do Sistema
+
                             </a>
 
                         </div>
@@ -460,92 +467,123 @@
      CONTEÚDO PRINCIPAL
      ===================================================== -->
 
-<main class="flex-grow">
+    <main class="flex-grow">
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+
         {% if mensagens %}
 
-            <div class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+        <div class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+
+            <div class="space-y-3">
 
                 {% for categoria, mensagem in mensagens %}
 
-                    <div
-                        class="
-                            flex items-center gap-3
-                            rounded-xl
-                            border
-                            px-4 py-3
-                            {% if categoria == 'sucesso' %}
-                                border-emerald-200
-                                bg-emerald-50
-                                text-emerald-800
-                                dark:border-emerald-900/60
-                                dark:bg-emerald-950/30
-                                dark:text-emerald-300
-                            {% else %}
-                                border-red-200
-                                bg-red-50
-                                text-red-800
-                                dark:border-red-900/60
-                                dark:bg-red-950/30
-                                dark:text-red-300
-                            {% endif %}
-                        "
-                    >
+                <div data-flash-mensagem class="
+                        flex
+                        items-center
+                        gap-3
+                        rounded-xl
+                        border
+                        px-4
+                        py-3
 
-                        <div class="shrink-0">
+                        {% if categoria == 'success' %}
 
-                            {% if categoria == 'sucesso' %}
+                            border-emerald-200
+                            bg-emerald-50
+                            text-emerald-800
 
-                                {{ lucide(
-                                    'circle-check',
-                                    style='width: 18px; height: 18px;'
-                                )|safe }}
+                            dark:border-emerald-900/60
+                            dark:bg-emerald-950/30
+                            dark:text-emerald-300
 
-                            {% else %}
+                        {% elif categoria == 'error' %}
 
-                                {{ lucide(
-                                    'circle-alert',
-                                    style='width: 18px; height: 18px;'
-                                )|safe }}
+                            border-red-200
+                            bg-red-50
+                            text-red-800
 
-                            {% endif %}
+                            dark:border-red-900/60
+                            dark:bg-red-950/30
+                            dark:text-red-300
 
-                        </div>
+                        {% elif categoria == 'warning' %}
 
-                        <p class="text-sm font-medium leading-5">
-                            {{ mensagem }}
-                        </p>
+                            border-amber-200
+                            bg-amber-50
+                            text-amber-800
+
+                            dark:border-amber-900/60
+                            dark:bg-amber-950/30
+                            dark:text-amber-300
+
+                        {% else %}
+
+                            border-[var(--color-border)]
+                            bg-[var(--color-surface)]
+                            text-[var(--color-text)]
+
+                        {% endif %}
+                    ">
+
+                    <div class="shrink-0">
+
+                        {% if categoria == 'success' %}
+
+                        {{ lucide(
+                        'circle-check',
+                        style='width: 18px; height: 18px;'
+                        )|safe }}
+
+                        {% elif categoria == 'warning' %}
+
+                        {{ lucide(
+                        'triangle-alert',
+                        style='width: 18px; height: 18px;'
+                        )|safe }}
+
+                        {% else %}
+
+                        {{ lucide(
+                        'circle-alert',
+                        style='width: 18px; height: 18px;'
+                        )|safe }}
+
+                        {% endif %}
 
                     </div>
+
+                    <p class="text-sm font-medium leading-5">
+                        {{ mensagem }}
+                    </p>
+
+                </div>
 
                 {% endfor %}
 
             </div>
 
+        </div>
+
         {% endif %}
-    {% endwith %}
 
-    {% block conteudo %}
-    {% endblock %}
+        {% endwith %}
 
-</main>
 
-    <!-- =====================================================
-     PRELINE
-     ===================================================== -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"></script> -->
+        {% block conteudo %}
+        {% endblock %}
 
-    <!-- =====================================================
-    LUCIDE
-     ===================================================== -->
+    </main>
+
+
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-    <!-- =====================================================
-     SCRIPTS DO SISTEMA
-     ===================================================== -->
     <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+
     <script src="{{ url_for('static', filename='js/tema.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
 
 </body>
 

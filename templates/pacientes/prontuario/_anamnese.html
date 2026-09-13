@@ -1,0 +1,189 @@
+    <!-- ===================================================== -->
+    <!-- ANAMNESE -->
+    <!-- ===================================================== -->
+
+    <section id="anamnese" role="tabpanel" class="hidden
+           bg-[var(--color-surface)]
+           border border-[var(--color-border)]
+           rounded-2xl shadow-sm p-6">
+
+        <div class="mb-6">
+
+            <h3 class="text-base font-semibold text-[var(--color-text)]">
+                Anamnese nutricional
+            </h3>
+
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">
+                Informações clínicas e hábitos relevantes para o acompanhamento.
+            </p>
+
+        </div>
+
+
+        <form method="POST" action="{{ url_for('pacientes.salvar_anamnese', paciente_id=paciente.id) }}"
+            class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                <!-- OBJETIVO -->
+
+                <div>
+
+                    <label for="objetivo_principal" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Objetivo principal
+                    </label>
+
+                    <input type="text" id="objetivo_principal" name="objetivo_principal"
+                        value="{{ paciente.anamneses.objetivo_principal if paciente.anamneses else '' }}" class="w-full h-10 px-3 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">
+
+                </div>
+
+
+                <!-- QUALIDADE DO SONO -->
+
+                <div>
+
+                    <label for="qualidade_sono" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Qualidade do sono
+                    </label>
+
+                    <input type="text" id="qualidade_sono" name="qualidade_sono"
+                        value="{{ paciente.anamneses.qualidade_sono if paciente.anamneses else '' }}" class="w-full h-10 px-3 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">
+
+                </div>
+
+
+                <!-- PATOLOGIAS -->
+
+                <div>
+
+                    <label for="patologias" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Patologias
+                    </label>
+
+                    <textarea id="patologias" name="patologias" rows="4"
+                        class="w-full px-3 py-2.5 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           resize-none
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">{{ paciente.anamneses.patologias if paciente.anamneses else '' }}</textarea>
+
+                </div>
+
+
+                <!-- MEDICAMENTOS -->
+
+                <div>
+
+                    <label for="medicamentos" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Medicamentos
+                    </label>
+
+                    <textarea id="medicamentos" name="medicamentos" rows="4"
+                        class="w-full px-3 py-2.5 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           resize-none
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">{{ paciente.anamneses.medicamentos if paciente.anamneses else '' }}</textarea>
+
+                </div>
+
+
+                <!-- ALERGIAS -->
+
+                <div>
+
+                    <label for="alergias_intolerancias" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Alergias e intolerâncias
+                    </label>
+
+                    <textarea id="alergias_intolerancias" name="alergias_intolerancias" rows="4"
+                        class="w-full px-3 py-2.5 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           resize-none
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">{{ paciente.anamneses.alergias_intolerancias if paciente.anamneses else '' }}</textarea>
+
+                </div>
+
+
+                <!-- AVERSÕES -->
+
+                <div>
+
+                    <label for="aversoes_alimentares" class="block mb-1.5 text-sm font-medium
+                           text-[var(--color-text)]">
+                        Aversões alimentares
+                    </label>
+
+                    <textarea id="aversoes_alimentares" name="aversoes_alimentares" rows="4"
+                        class="w-full px-3 py-2.5 rounded-lg
+                           border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           text-sm text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           resize-none
+                           focus:outline-none
+                           focus:ring-2 focus:ring-[var(--color-primary)]/20
+                           focus:border-[var(--color-primary)]">{{ paciente.anamneses.aversoes_alimentares if paciente.anamneses else '' }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- RODAPÉ DO FORMULÁRIO -->
+
+            <div class="flex justify-end pt-2
+                   border-t border-[var(--color-border)]">
+
+                <button type="submit" class="inline-flex items-center justify-center gap-2
+                       h-9 px-4 rounded-lg
+                       bg-[var(--color-primary)]
+                       text-sm font-medium text-white
+                       hover:bg-[var(--color-primary-hover)]
+                       transition shadow-sm">
+
+                    {{ lucide('save', style='width: 16px; height: 16px;')|safe }}
+
+                    Salvar anamnese
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>

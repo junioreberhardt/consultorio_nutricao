@@ -1,0 +1,278 @@
+<div id="secao-dados-pessoais" data-edicao-secao="dados-pessoais"
+    class="pb-6 border-b border-[var(--color-border-subtle)]">
+
+    <!-- VISUALIZAÇÃO -->
+    <div data-modo="visualizacao">
+
+        <div class="flex items-center justify-between gap-4 mb-5">
+
+            <h4 class="text-sm font-semibold text-[var(--color-text)]">
+                Informações pessoais
+            </h4>
+
+            <button type="button" data-acao="editar" class="
+                    inline-flex items-center gap-1.5
+                    h-8 px-3
+                    rounded-lg
+                    border border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    text-xs font-medium
+                    text-[var(--color-text-muted)]
+                    hover:text-[var(--color-primary)]
+                    hover:border-[var(--color-primary)]
+                    transition
+                ">
+                {{ lucide('pencil', style='width: 14px; height: 14px;')|safe }}
+                Editar
+            </button>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6">
+
+            <!-- Nome -->
+            <div class="sm:col-span-2 lg:col-span-1">
+
+                <span class="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-subtle)]
+                ">
+                    Nome
+                </span>
+
+                <span data-campo="nome" class="
+                        block mt-1.5
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    {{ paciente.nome }}
+                </span>
+
+            </div>
+
+
+            <!-- Data de nascimento -->
+            <div>
+
+                <span class="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-subtle)]
+                ">
+                    Data de nascimento
+                </span>
+
+                <span data-campo="data-nascimento" class="
+                        block mt-1.5
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    {{
+                    paciente.data_nascimento.strftime('%d/%m/%Y')
+                    if paciente.data_nascimento
+                    else '—'
+                    }}
+                </span>
+
+            </div>
+
+
+            <!-- Sexo -->
+            <div>
+
+                <span class="
+                    text-[11px]
+                    font-medium
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-subtle)]
+                ">
+                    Sexo
+                </span>
+
+                <span data-campo="genero" class="
+                        block mt-1.5
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    {% if paciente.genero == 'M' %}
+                    Masculino
+                    {% elif paciente.genero == 'F' %}
+                    Feminino
+                    {% else %}
+                    —
+                    {% endif %}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EDIÇÃO -->
+    <form data-modo="edicao" class="hidden">
+
+        <input type="hidden" name="secao" value="dados-pessoais">
+
+        <div class="flex items-center justify-between gap-4 mb-5">
+
+            <h4 class="text-sm font-semibold text-[var(--color-text)]">
+                Informações pessoais
+            </h4>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Nome -->
+            <div class="sm:col-span-2">
+
+                <label for="edicao-nome" class="
+                        block mb-2
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    Nome completo
+                </label>
+
+                <input id="edicao-nome" type="text" name="nome" value="{{ paciente.nome }}" required autocomplete="name"
+                    class="
+                        w-full
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3.5 py-2.5
+                        text-sm
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        placeholder:text-[var(--color-text-subtle)]
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    ">
+
+            </div>
+
+
+            <!-- Data de nascimento -->
+            <div>
+
+                <label for="edicao-data-nascimento" class="
+                        block mb-2
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    Data de nascimento
+                </label>
+
+                <input id="edicao-data-nascimento" type="date" name="data_nascimento" value="{{
+                        paciente.data_nascimento.strftime('%Y-%m-%d')
+                        if paciente.data_nascimento
+                        else ''
+                    }}" required class="
+                        w-full
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3.5 py-2.5
+                        text-sm
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    ">
+
+            </div>
+
+
+            <!-- Sexo -->
+            <div>
+
+                <label for="edicao-genero" class="
+                        block mb-2
+                        text-sm font-medium
+                        text-[var(--color-text)]
+                    ">
+                    Sexo
+                </label>
+
+                <select id="edicao-genero" name="genero" required class="
+                        w-full
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3.5 py-2.5
+                        text-sm
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/20
+                    ">
+                    <option value="M" {% if paciente.genero=='M' %}selected{% endif %}>
+                        Masculino
+                    </option>
+
+                    <option value="F" {% if paciente.genero=='F' %}selected{% endif %}>
+                        Feminino
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- Ações -->
+        <div class="flex justify-end gap-3 mt-5">
+
+            <button type="button" data-acao="cancelar" class="
+                    inline-flex items-center justify-center
+                    h-9 px-4
+                    rounded-lg
+                    border border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    text-sm font-medium
+                    text-[var(--color-text-muted)]
+                    hover:bg-[var(--color-surface-muted)]
+                    hover:text-[var(--color-text)]
+                    transition
+                ">
+                Cancelar
+            </button>
+
+            <button type="submit" data-acao="salvar" class="
+                    inline-flex items-center justify-center
+                    gap-2
+                    h-9 px-4
+                    rounded-lg
+                    bg-[var(--color-primary)]
+                    text-sm font-medium
+                    text-white
+                    shadow-sm
+                    hover:bg-[var(--color-primary-hover)]
+                    transition
+                ">
+                {{ lucide('save', style='width: 15px; height: 15px;')|safe }}
+                Salvar alterações
+            </button>
+
+        </div>
+
+    </form>
+
+</div>

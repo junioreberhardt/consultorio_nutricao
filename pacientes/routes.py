@@ -1,7 +1,7 @@
 import unicodedata
 from datetime import date, datetime
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -190,6 +190,183 @@ def gerenciar_paciente(paciente_id):
     )
 
 
+# EDITAR DADOS GERAIS DO PRONTUÁRIO
+@pacientes_bp.route(
+    "/gerenciar/paciente/<int:paciente_id>/dados-gerais",
+    methods=["POST"],
+)
+@login_required
+def atualizar_dados_gerais(paciente_id):
+    if not current_user.eh_admin() and not current_user.pode_cadastrar_paciente:
+        flash(
+            "Você não tem permissão para editar pacientes.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    paciente = Paciente.query.get_or_404(paciente_id)
+
+    nome = request.form.get("nome", "").strip()
+    data_nascimento_str = request.form.get(
+        "data_nascimento",
+        "",
+    ).strip()
+    genero = request.form.get("genero")
+    telefone = request.form.get("telefone", "").strip()
+    email = request.form.get("email", "").strip()
+
+    # ---------------------------------------------------------
+    # NOME
+    # ---------------------------------------------------------
+
+    if not nome:
+        flash(
+            "Informe o nome do paciente.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # DATA DE NASCIMENTO
+    # ---------------------------------------------------------
+
+    try:
+        data_nascimento = datetime.strptime(
+            data_nascimento_str,
+            "%Y-%m-%d",
+        ).date()
+
+    except (TypeError, ValueError):
+        flash(
+            "Informe uma data de nascimento válida.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    hoje = date.today()
+
+    if data_nascimento > hoje:
+        flash(
+            "A data de nascimento não pode estar no futuro.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # IDADE
+    # ---------------------------------------------------------
+
+    idade = (
+        hoje.year
+        - data_nascimento.year
+        - (
+            (hoje.month, hoje.day)
+            < (
+                data_nascimento.month,
+                data_nascimento.day,
+            )
+        )
+    )
+
+    if idade < 0 or idade > 150:
+        flash(
+            "Verifique a data de nascimento informada.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # SEXO
+    # ---------------------------------------------------------
+
+    if genero not in ["F", "M"]:
+        flash(
+            "Selecione o sexo do paciente.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # SALVAR
+    # ---------------------------------------------------------
+
+    try:
+        paciente.nome = nome
+        paciente.data_nascimento = data_nascimento
+        paciente.genero = genero
+        paciente.telefone = telefone or None
+        paciente.email = email or None
+
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+
+        flash(
+            "Não foi possível salvar os dados do paciente.",
+            "error",
+        )
+
+        return redirect(
+            url_for(
+                "pacientes.gerenciar_paciente",
+                paciente_id=paciente_id,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # SUCESSO
+    # ---------------------------------------------------------
+
+    flash(
+        "Dados atualizados com sucesso.",
+        "success",
+    )
+
+    return redirect(
+        url_for(
+            "pacientes.gerenciar_paciente",
+            paciente_id=paciente_id,
+        )
+    )
+
+
 # ==========================================================
 # EDITAR PACIENTE — TELA
 # ==========================================================
@@ -212,96 +389,149 @@ def editar_paciente(paciente_id):
 @pacientes_bp.route("/editar/paciente/<int:paciente_id>", methods=["POST"])
 @login_required
 def editar_paciente_salvar(paciente_id):
+
     if not current_user.eh_admin() and not current_user.pode_cadastrar_paciente:
-        return "<h1>Acesso Negado</h1>", 403
+        return jsonify(
+            {
+                "sucesso": False,
+                "mensagem": "Você não tem permissão para editar pacientes.",
+            }
+        ), 403
+
     paciente = Paciente.query.get_or_404(paciente_id)
+
+    secao = request.form.get("secao", "").strip()
+
     # ==========================================================
-    # ORIGEM DA EDIÇÃO
+    # DADOS PESSOAIS
     # ==========================================================
-    origem = request.form.get("origem", "gerenciar")
-    busca = request.form.get("busca", "").strip()
-    try:
-        pagina = int(request.form.get("pagina", 1))
-    except (TypeError, ValueError):
-        pagina = 1
-    try:
-        por_pagina = int(request.form.get("por_pagina", 20))
-    except (TypeError, ValueError):
-        por_pagina = 20
-    # ==========================================================
-    # DADOS DO FORMULÁRIO
-    # ==========================================================
-    nome = request.form.get("nome", "").strip()
-    data_nascimento_str = request.form.get("data_nascimento", "").strip()
-    genero = request.form.get("genero")
-    peso = request.form.get("peso")
-    altura = request.form.get("altura")
-    telefone = request.form.get("telefone", "").strip()
-    email = request.form.get("email", "").strip()
-    # ==========================================================
-    # VALIDAÇÕES
-    # ==========================================================
-    try:
-        data_nascimento = datetime.strptime(data_nascimento_str, "%Y-%m-%d").date()
+
+    if secao == "dados-pessoais":
+        nome = request.form.get("nome", "").strip()
+        data_nascimento_str = request.form.get("data_nascimento", "").strip()
+        genero = request.form.get("genero", "").strip()
+
+        if not nome:
+            return jsonify(
+                {"sucesso": False, "mensagem": "Informe o nome completo do paciente."}
+            ), 400
+
+        if genero not in {"M", "F"}:
+            return jsonify(
+                {"sucesso": False, "mensagem": "Selecione um sexo válido."}
+            ), 400
+
+        try:
+            data_nascimento = datetime.strptime(data_nascimento_str, "%Y-%m-%d").date()
+
+        except (TypeError, ValueError):
+            return jsonify(
+                {"sucesso": False, "mensagem": "Informe uma data de nascimento válida."}
+            ), 400
+
         hoje = date.today()
+
         if data_nascimento > hoje:
-            flash("A data de nascimento não pode estar no futuro.", "erro")
-            return redirect(
-                url_for(
-                    "pacientes.editar_paciente", paciente_id=paciente.id, origem=origem
-                )
-            )
+            return jsonify(
+                {
+                    "sucesso": False,
+                    "mensagem": "A data de nascimento não pode estar no futuro.",
+                }
+            ), 400
+
         idade = (
             hoje.year
             - data_nascimento.year
             - ((hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day))
         )
+
         if idade < 0 or idade > 150:
-            flash("Verifique a data de nascimento informada.", "erro")
-            return redirect(
-                url_for(
-                    "pacientes.editar_paciente", paciente_id=paciente.id, origem=origem
-                )
-            )
-        # ======================================================
-        # ATUALIZAÇÃO DO PACIENTE
-        # ======================================================
+            return jsonify(
+                {
+                    "sucesso": False,
+                    "mensagem": "Verifique a data de nascimento informada.",
+                }
+            ), 400
+
         paciente.nome = nome
         paciente.data_nascimento = data_nascimento
         paciente.genero = genero
-        paciente.peso = float(peso)
-        paciente.altura = float(altura)
+
+        try:
+            db.session.commit()
+
+        except Exception:
+            db.session.rollback()
+
+            return jsonify(
+                {
+                    "sucesso": False,
+                    "mensagem": "Não foi possível salvar os dados pessoais.",
+                }
+            ), 500
+
+        return jsonify(
+            {
+                "sucesso": True,
+                "secao": "dados-pessoais",
+                "mensagem": "Dados pessoais atualizados com sucesso.",
+                "paciente": {
+                    "nome": paciente.nome,
+                    "data_nascimento": paciente.data_nascimento.strftime("%d/%m/%Y"),
+                    "data_nascimento_input": paciente.data_nascimento.strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "genero": paciente.genero,
+                    "genero_texto": (
+                        "Masculino" if paciente.genero == "M" else "Feminino"
+                    ),
+                    "idade": paciente.idade_atual,
+                },
+            }
+        )
+
+    # ==========================================================
+    # CONTATO
+    # ==========================================================
+
+    if secao == "contato":
+        telefone = request.form.get("telefone", "").strip()
+
+        email = request.form.get("email", "").strip()
+
         paciente.telefone = telefone or None
         paciente.email = email or None
-        # ======================================================
-        # SALVAR
-        # ======================================================
-        db.session.commit()
-    except (TypeError, ValueError):
-        db.session.rollback()
-        flash("Não foi possível atualizar os dados do paciente.", "erro")
-        return redirect(
-            url_for("pacientes.editar_paciente", paciente_id=paciente.id, origem=origem)
+
+        try:
+            db.session.commit()
+
+        except Exception:
+            db.session.rollback()
+
+            return jsonify(
+                {
+                    "sucesso": False,
+                    "mensagem": "Não foi possível salvar os dados de contato.",
+                }
+            ), 500
+
+        return jsonify(
+            {
+                "sucesso": True,
+                "secao": "contato",
+                "mensagem": "Dados de contato atualizados com sucesso.",
+                "paciente": {
+                    "telefone": paciente.telefone or "",
+                    "email": paciente.email or "",
+                },
+            }
         )
 
     # ==========================================================
-    # MENSAGEM DE SUCESSO
+    # SEÇÃO INVÁLIDA
     # ==========================================================
-    flash(f"Dados de {paciente.nome} atualizados com sucesso.", "sucesso")
 
-    # ==========================================================
-    # RETORNO CONFORME A ORIGEM
-    # ==========================================================
-    if origem == "lista":
-        return redirect(
-            url_for(
-                "pacientes.listar_pacientes",
-                busca=busca,
-                pagina=pagina,
-                por_pagina=por_pagina,
-            )
-        )
-    return redirect(url_for("pacientes.gerenciar_paciente", paciente_id=paciente.id))
+    return jsonify({"sucesso": False, "mensagem": "Seção de edição inválida."}), 400
 
 
 # ==========================================================
@@ -382,7 +612,7 @@ def nova_avaliacao(paciente_id):
             data_consulta = datetime.strptime(data_consulta_str, "%Y-%m-%d")
 
         except (TypeError, ValueError):
-            flash("Informe uma data válida para a avaliação.", "erro")
+            flash("Informe uma data válida para a avaliação.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -397,21 +627,21 @@ def nova_avaliacao(paciente_id):
             altura_atual = float(altura_str)
 
         except (TypeError, ValueError):
-            flash("Informe peso e altura válidos.", "erro")
+            flash("Informe peso e altura válidos.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
             )
 
         if peso_atual <= 0 or peso_atual > 500:
-            flash("Informe um peso válido.", "erro")
+            flash("Informe um peso válido.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
             )
 
         if altura_atual <= 0 or altura_atual > 300:
-            flash("Informe uma altura válida.", "erro")
+            flash("Informe uma altura válida.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -435,7 +665,7 @@ def nova_avaliacao(paciente_id):
             circunferencia_cintura = float(cintura_str) if cintura_str else None
 
         except (TypeError, ValueError):
-            flash("Verifique os valores da composição corporal.", "erro")
+            flash("Verifique os valores da composição corporal.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -448,7 +678,7 @@ def nova_avaliacao(paciente_id):
         if percentual_gordura is not None and (
             percentual_gordura < 0 or percentual_gordura > 100
         ):
-            flash("O percentual de gordura deve estar entre 0 e 100.", "erro")
+            flash("O percentual de gordura deve estar entre 0 e 100.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -457,7 +687,7 @@ def nova_avaliacao(paciente_id):
         if percentual_massa_magra is not None and (
             percentual_massa_magra < 0 or percentual_massa_magra > 100
         ):
-            flash("O percentual de massa magra deve estar entre 0 e 100.", "erro")
+            flash("O percentual de massa magra deve estar entre 0 e 100.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -466,7 +696,7 @@ def nova_avaliacao(paciente_id):
         if circunferencia_cintura is not None and (
             circunferencia_cintura <= 0 or circunferencia_cintura > 300
         ):
-            flash("Informe uma circunferência de cintura válida.", "erro")
+            flash("Informe uma circunferência de cintura válida.", "error")
 
             return redirect(
                 url_for("pacientes.nova_avaliacao", paciente_id=paciente.id)
@@ -494,7 +724,7 @@ def nova_avaliacao(paciente_id):
         db.session.add(nova_consulta)
         db.session.commit()
 
-        flash(f"Avaliação física de {paciente.nome} registrada com sucesso.", "sucesso")
+        flash(f"Avaliação física de {paciente.nome} registrada com sucesso.", "success")
 
         return redirect(
             url_for("pacientes.gerenciar_paciente", paciente_id=paciente.id)
