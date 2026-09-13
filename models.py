@@ -79,17 +79,26 @@ class ConsultaAntropometrica(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     paciente_id = db.Column(db.Integer, db.ForeignKey("pacientes.id"), nullable=False)
+
     data_consulta = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    # Métricas corporais capturadas na consulta
     peso_atual = db.Column(db.Float, nullable=False)
     altura_atual = db.Column(db.Float, nullable=False)
-    percentual_gordura = db.Column(
-        db.Float, nullable=True
-    )  # Dobras cutâneas ou bioimpedância
+
+    percentual_gordura = db.Column(db.Float, nullable=True)
     percentual_massa_magra = db.Column(db.Float, nullable=True)
     circunferencia_cintura = db.Column(db.Float, nullable=True)
+
     observacoes_clinicas = db.Column(db.Text, nullable=True)
+
+    @property
+    def imc(self):
+        if not self.altura_atual or self.altura_atual <= 0:
+            return None
+
+        altura_metros = self.altura_atual / 100
+
+        return self.peso_atual / (altura_metros * altura_metros)
 
 
 # TABELA 2: FICHA DE ANAMNESE E RECORDATÓRIO CLÍNICO (1 PARA 1)

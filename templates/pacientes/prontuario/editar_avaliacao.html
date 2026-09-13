@@ -1,0 +1,572 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+Editar Avaliação Física : Nutrir Melhor
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="w-full max-w-3xl mx-auto px-4 sm:px-6 py-7">
+
+    <!-- ===================================================== -->
+    <!-- CABEÇALHO -->
+    <!-- ===================================================== -->
+
+    <div class="mb-7">
+
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+
+            <div>
+
+                <div class="flex items-center gap-2 text-xs text-[var(--color-text-muted)] mb-2">
+
+                    <a href="{{ url_for(
+                            'pacientes.gerenciar_paciente',
+                            paciente_id=paciente.id,
+                            aba='avaliacao-fisica'
+                        ) }}"
+                        class="inline-flex items-center gap-2 text-xs font-normal text-[var(--color-text-muted)] transition hover:text-[var(--color-primary)]">
+                        {{ lucide('arrow-left', size=16) }}
+
+                        Avaliação física
+                    </a>
+
+                </div>
+
+                <h2 class="text-[22px] font-semibold tracking-tight text-[var(--color-text)]">
+                    Editar avaliação física
+                </h2>
+
+                <p class="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">
+                    Atualize os dados da avaliação antropométrica de
+                    <span class="font-medium text-[var(--color-text)]">
+                        {{ paciente.nome }}
+                    </span>.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- FORMULÁRIO -->
+    <!-- ===================================================== -->
+
+    <form action="{{ url_for(
+            'pacientes.editar_avaliacao',
+            avaliacao_id=avaliacao.id
+        ) }}" method="POST" class="space-y-5">
+
+
+        <!-- ================================================= -->
+        <!-- DADOS DA AVALIAÇÃO -->
+        <!-- ================================================= -->
+
+        <section class="
+            rounded-2xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface)]
+            overflow-hidden
+        ">
+
+            <div class="
+                px-5 py-4
+                border-b
+                border-[var(--color-border)]
+            ">
+
+                <h3 class="
+                    text-sm
+                    font-semibold
+                    text-[var(--color-text)]
+                ">
+                    Dados da avaliação
+                </h3>
+
+                <p class="
+                    mt-0.5
+                    text-xs
+                    text-[var(--color-text-muted)]
+                ">
+                    Informações básicas da avaliação realizada.
+                </p>
+
+            </div>
+
+
+            <div class="p-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+
+                <!-- DATA -->
+
+                <div>
+
+                    <label for="data_consulta" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Data da avaliação
+                    </label>
+
+                    <input type="date" id="data_consulta" name="data_consulta"
+                        value="{{ avaliacao.data_consulta.strftime('%Y-%m-%d') }}" required class="
+                            h-10
+                            w-full
+                            rounded-lg
+                            border
+                            border-[var(--color-border)]
+                            bg-[var(--color-surface)]
+                            px-3
+                            text-sm
+                            text-[var(--color-text)]
+                            outline-none
+                            transition
+                            focus:border-[var(--color-primary)]
+                            focus:ring-2
+                            focus:ring-[var(--color-primary)]/10
+                        ">
+
+                </div>
+
+
+                <!-- PESO -->
+
+                <div>
+
+                    <label for="peso_atual" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Peso atual
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="number" id="peso_atual" name="peso_atual" value="{{ avaliacao.peso_atual }}"
+                            min="0.1" max="500" step="0.1" required placeholder="Ex.: 72,5" class="
+                                h-10
+                                w-full
+                                rounded-lg
+                                border
+                                border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                px-3 pr-12
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/10
+                            ">
+
+                        <span class="
+                            pointer-events-none
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-subtle)]
+                        ">
+                            kg
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ALTURA -->
+
+                <div>
+
+                    <label for="altura_atual" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Altura
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="number" id="altura_atual" name="altura_atual" value="{{ avaliacao.altura_atual }}"
+                            min="1" max="300" step="0.1" required placeholder="Ex.: 175" class="
+                                h-10
+                                w-full
+                                rounded-lg
+                                border
+                                border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                px-3 pr-12
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/10
+                            ">
+
+                        <span class="
+                            pointer-events-none
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-subtle)]
+                        ">
+                            cm
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- COMPOSIÇÃO CORPORAL -->
+        <!-- ================================================= -->
+
+        <section class="
+            rounded-2xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface)]
+            overflow-hidden
+        ">
+
+            <div class="
+                px-5 py-4
+                border-b
+                border-[var(--color-border)]
+            ">
+
+                <h3 class="
+                    text-sm
+                    font-semibold
+                    text-[var(--color-text)]
+                ">
+                    Composição corporal
+                </h3>
+
+                <p class="
+                    mt-0.5
+                    text-xs
+                    text-[var(--color-text-muted)]
+                ">
+                    Preencha quando os dados estiverem disponíveis.
+                </p>
+
+            </div>
+
+
+            <div class="p-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+
+                <!-- GORDURA -->
+
+                <div>
+
+                    <label for="percentual_gordura" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Gordura corporal
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="number" id="percentual_gordura" name="percentual_gordura"
+                            value="{{ avaliacao.percentual_gordura if avaliacao.percentual_gordura is not none else '' }}"
+                            min="0" max="100" step="0.1" placeholder="Ex.: 18,5" class="
+                                h-10
+                                w-full
+                                rounded-lg
+                                border
+                                border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                px-3 pr-10
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/10
+                            ">
+
+                        <span class="
+                            pointer-events-none
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-subtle)]
+                        ">
+                            %
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MASSA MAGRA -->
+
+                <div>
+
+                    <label for="percentual_massa_magra" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Massa magra
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="number" id="percentual_massa_magra" name="percentual_massa_magra"
+                            value="{{ avaliacao.percentual_massa_magra if avaliacao.percentual_massa_magra is not none else '' }}"
+                            min="0" max="100" step="0.1" placeholder="Ex.: 81,5" class="
+                                h-10
+                                w-full
+                                rounded-lg
+                                border
+                                border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                px-3 pr-10
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/10
+                            ">
+
+                        <span class="
+                            pointer-events-none
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-subtle)]
+                        ">
+                            %
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CINTURA -->
+
+                <div>
+
+                    <label for="circunferencia_cintura" class="
+                        block
+                        mb-1.5
+                        text-xs
+                        font-medium
+                        text-[var(--color-text-muted)]
+                    ">
+                        Circunferência da cintura
+                    </label>
+
+                    <div class="relative">
+
+                        <input type="number" id="circunferencia_cintura" name="circunferencia_cintura"
+                            value="{{ avaliacao.circunferencia_cintura if avaliacao.circunferencia_cintura is not none else '' }}"
+                            min="0.1" max="300" step="0.1" placeholder="Ex.: 82" class="
+                                h-10
+                                w-full
+                                rounded-lg
+                                border
+                                border-[var(--color-border)]
+                                bg-[var(--color-surface)]
+                                px-3 pr-12
+                                text-sm
+                                text-[var(--color-text)]
+                                outline-none
+                                transition
+                                focus:border-[var(--color-primary)]
+                                focus:ring-2
+                                focus:ring-[var(--color-primary)]/10
+                            ">
+
+                        <span class="
+                            pointer-events-none
+                            absolute
+                            right-3
+                            top-1/2
+                            -translate-y-1/2
+                            text-xs
+                            text-[var(--color-text-subtle)]
+                        ">
+                            cm
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- OBSERVAÇÕES -->
+        <!-- ================================================= -->
+
+        <section class="
+            rounded-2xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface)]
+            overflow-hidden
+        ">
+
+            <div class="
+                px-5 py-4
+                border-b
+                border-[var(--color-border)]
+            ">
+
+                <h3 class="
+                    text-sm
+                    font-semibold
+                    text-[var(--color-text)]
+                ">
+                    Observações clínicas
+                </h3>
+
+                <p class="
+                    mt-0.5
+                    text-xs
+                    text-[var(--color-text-muted)]
+                ">
+                    Registre observações relevantes da avaliação.
+                </p>
+
+            </div>
+
+
+            <div class="p-5">
+
+                <textarea id="observacoes_clinicas" name="observacoes_clinicas" rows="4"
+                    placeholder="Digite uma observação, se necessário..." class="
+                        block
+                        w-full
+                        resize-y
+                        rounded-lg
+                        border
+                        border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3
+                        py-2.5
+                        text-sm
+                        leading-5
+                        text-[var(--color-text)]
+                        outline-none
+                        transition
+                        placeholder:text-[var(--color-text-subtle)]
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/10
+                    ">{{ avaliacao.observacoes_clinicas or '' }}</textarea>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- AÇÕES -->
+        <!-- ================================================= -->
+
+        <div class="flex items-center justify-end gap-3 pt-1">
+
+            <a href="{{ url_for(
+                    'pacientes.gerenciar_paciente',
+                    paciente_id=paciente.id,
+                    aba='avaliacao-fisica'
+                ) }}" class="
+                    inline-flex
+                    h-10
+                    items-center
+                    justify-center
+                    rounded-lg
+                    px-4
+                    text-sm
+                    font-medium
+                    text-[var(--color-text-muted)]
+                    transition
+                    hover:bg-[var(--color-surface)]
+                    hover:text-[var(--color-text)]
+                ">
+                Cancelar
+            </a>
+
+
+            <button type="submit" class="
+                    inline-flex
+                    h-10
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-lg
+                    bg-[var(--color-primary)]
+                    px-4
+                    text-sm
+                    font-semibold
+                    text-white
+                    shadow-sm
+                    transition
+                    hover:bg-[var(--color-primary-hover)]
+                    focus:outline-none
+                    focus:ring-2
+                    focus:ring-[var(--color-primary)]/20
+                ">
+
+                {{ lucide(
+                'check',
+                class='h-4 w-4'
+                )|safe }}
+
+                Salvar alterações
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

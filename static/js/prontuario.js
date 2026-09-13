@@ -5,13 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-/* =========================================================
-   ABAS
-========================================================= */
-
 function configurarAbas() {
     const abas = document.querySelectorAll("[data-hs-tab]");
     const paineis = document.querySelectorAll('[role="tabpanel"]');
+    const container = document.querySelector("[data-aba-inicial]");
 
     if (!abas.length) {
         return;
@@ -27,7 +24,7 @@ function configurarAbas() {
         });
     }
 
-    function ativarAba(aba) {
+    function ativarAba(aba, limparFlash) {
         const alvo = aba.getAttribute("data-hs-tab");
 
         if (!alvo) {
@@ -69,25 +66,41 @@ function configurarAbas() {
         );
 
         aba.setAttribute("aria-selected", "true");
+
+        if (limparFlash) {
+            removerMensagensFlash();
+        }
     }
 
     abas.forEach(function (aba) {
         aba.addEventListener("click", function (evento) {
             evento.preventDefault();
 
-            removerMensagensFlash();
-
-            ativarAba(aba);
+            ativarAba(aba, true);
         });
     });
 
-    ativarAba(abas[0]);
+    let abaInicial = "dados-gerais";
+
+    if (container) {
+        abaInicial =
+            container.getAttribute("data-aba-inicial")
+            || "dados-gerais";
+    }
+
+    let abaParaAbrir = abas[0];
+
+    abas.forEach(function (aba) {
+        const alvo = aba.getAttribute("data-hs-tab");
+
+        if (alvo === "#" + abaInicial) {
+            abaParaAbrir = aba;
+        }
+    });
+
+    ativarAba(abaParaAbrir, false);
 }
 
-
-/* =========================================================
-   EDIÇÃO DOS DADOS GERAIS
-========================================================= */
 
 function configurarEdicaoDadosGerais() {
     const visualizacao = document.querySelector(
@@ -134,10 +147,6 @@ function configurarEdicaoDadosGerais() {
     });
 }
 
-
-/* =========================================================
-   MÁSCARA DE TELEFONE
-========================================================= */
 
 function configurarMascaraTelefone() {
     const campoTelefone = document.querySelector(

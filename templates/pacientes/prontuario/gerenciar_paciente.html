@@ -6,7 +6,7 @@
 
 {% block conteudo %}
 
-<div class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-7">
+<div class="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-7" data-aba-inicial="{{ aba_inicial }}">
 
     {% include 'pacientes/prontuario/_cabecalho.html' %}
 
@@ -26,5 +26,4 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/prontuario.js') }}"></script>
-<script src="{{ url_for('static', filename='js/telefone.js') }}"></script>
 {% endblock %}
