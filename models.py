@@ -101,6 +101,9 @@ class ConsultaAntropometrica(db.Model):
         return self.peso_atual / (altura_metros * altura_metros)
 
 
+5
+
+
 # TABELA 2: FICHA DE ANAMNESE E RECORDATÓRIO CLÍNICO (1 PARA 1)
 class Anamnese(db.Model):
     __tablename__ = "anamneses"

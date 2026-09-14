@@ -1,0 +1,722 @@
+<!-- ===================================================== -->
+<!-- HISTÓRICO DE AVALIAÇÕES -->
+<!-- ===================================================== -->
+
+<div class="mb-3">
+
+    <div class="flex items-center justify-between gap-4 mb-4">
+
+        <div>
+            <h3 class="text-[17px] font-semibold text-[var(--color-text)]">
+                Histórico de avaliações
+            </h3>
+
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">
+                Acompanhe os registros antropométricos realizados ao longo do tempo.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="rounded-xl border border-[var(--color-border)] overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full table-fixed text-xs">
+
+                <colgroup>
+                    <col class="w-[14%]">
+                    <col class="w-[12%]">
+                    <col class="w-[12%]">
+                    <col class="w-[11%]">
+                    <col class="w-[14%]">
+                    <col class="w-[16%]">
+                    <col class="w-[12%]">
+                    <col class="w-[9%]">
+                </colgroup>
+
+
+                <thead>
+
+                    <tr class="border-b border-[var(--color-border)] bg-[var(--color-surface-muted)]">
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Data
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Peso
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Altura
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            IMC
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Gordura
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Massa magra
+                        </th>
+
+                        <th class="px-2.5 py-3 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Cintura
+                        </th>
+
+                        <th class="px-2.5 py-3 text-right font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                            Ações
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for consulta in avaliacoes_ordenadas %}
+
+                    {% if loop.index0 + 1 < avaliacoes_ordenadas|length %} {% set
+                        consulta_anterior=avaliacoes_ordenadas[loop.index0 + 1] %} {% else %} {% set
+                        consulta_anterior=none %} {% endif %} <!--=================================================-->
+                        <!-- AVALIAÇÃO -->
+                        <!-- ================================================= -->
+
+                        <tr id="avaliacao-{{ consulta.id }}"
+                            class="hover:bg-[var(--color-surface-muted)] transition-colors">
+
+                            <!-- DATA -->
+
+                            <td class="px-2.5 py-3 align-top">
+
+                                <div data-view="{{ consulta.id }}"
+                                    class="font-medium text-[var(--color-text)] whitespace-nowrap">
+                                    {{ consulta.data_consulta.strftime('%d/%m/%Y') }}
+                                </div>
+
+
+                                <div data-edit="{{ consulta.id }}" class="hidden">
+
+                                    <input type="date" name="data_consulta"
+                                        form="form-editar-avaliacao-{{ consulta.id }}"
+                                        value="{{ consulta.data_consulta.strftime('%Y-%m-%d') }}" required class="w-[120px] max-w-full rounded-lg border border-[var(--color-border)]
+                                           bg-[var(--color-surface)]
+                                           px-2 py-2 text-xs
+                                           text-[var(--color-text)]
+                                           outline-none
+                                           focus:border-[var(--color-primary)]
+                                           focus:ring-1 focus:ring-[var(--color-primary)]">
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- PESO -->
+
+                            <td class="px-2.5 py-3 align-top">
+
+                                <div data-view="{{ consulta.id }}">
+
+                                    <div class="text-[var(--color-text)] whitespace-nowrap">
+                                        {{ "%.1f"|format(consulta.peso_atual) }} kg
+                                    </div>
+
+
+                                    {% if consulta_anterior and consulta_anterior.peso_atual is not none %}
+
+                                    {% set peso_atual = consulta.peso_atual|round(1) %}
+                                    {% set peso_anterior = consulta_anterior.peso_atual|round(1) %}
+                                    {% set diferenca_peso = (peso_atual - peso_anterior)|round(1) %}
+
+                                    {% if diferenca_peso > 0 %}
+
+                                    <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                                        ↑ {{ "%.1f"|format(diferenca_peso) }} kg
+                                    </div>
+
+                                    {% elif diferenca_peso < 0 %} <div
+                                        class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                                        ↓ {{ "%.1f"|format(diferenca_peso|abs) }} kg
+                                </div>
+
+                                {% else %}
+
+                                <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+                                    —
+                                </div>
+
+                                {% endif %}
+
+                                {% endif %}
+
+        </div>
+
+
+        <div data-edit="{{ consulta.id }}" class="hidden">
+
+            <div class="flex items-center gap-1.5">
+
+                <input id="peso-edicao-{{ consulta.id }}" type="number" name="peso_atual"
+                    form="form-editar-avaliacao-{{ consulta.id }}" value="{{ '%.1f'|format(consulta.peso_atual) }}"
+                    min="0.1" max="500" step="0.1" required data-imc-peso="{{ consulta.id }}" class="w-[76px] rounded-lg border border-[var(--color-border)]
+                                               bg-[var(--color-surface)]
+                                               px-2 py-2 text-xs
+                                               text-[var(--color-text)]
+                                               outline-none
+                                               focus:border-[var(--color-primary)]
+                                               focus:ring-1 focus:ring-[var(--color-primary)]">
+
+                <span class="text-xs text-[var(--color-text-muted)]">
+                    kg
+                </span>
+
+            </div>
+
+        </div>
+
+        </td>
+
+
+        <!-- ALTURA -->
+
+        <td class="px-2.5 py-3 align-top">
+
+            <div data-view="{{ consulta.id }}">
+
+                <div class="text-[var(--color-text)] whitespace-nowrap">
+                    {{ "%.1f"|format(consulta.altura_atual) }} cm
+                </div>
+
+
+                {% if consulta_anterior and consulta_anterior.altura_atual is not none %}
+
+                {% set altura_atual = consulta.altura_atual|round(1) %}
+                {% set altura_anterior = consulta_anterior.altura_atual|round(1) %}
+                {% set diferenca_altura = (altura_atual - altura_anterior)|round(1) %}
+
+                {% if diferenca_altura > 0 %}
+
+                <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                    ↑ {{ "%.1f"|format(diferenca_altura) }} cm
+                </div>
+
+                {% elif diferenca_altura < 0 %} <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                    ↓ {{ "%.1f"|format(diferenca_altura|abs) }} cm
+            </div>
+
+            {% else %}
+
+            <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+                —
+            </div>
+
+            {% endif %}
+
+            {% endif %}
+
+    </div>
+
+
+    <div data-edit="{{ consulta.id }}" class="hidden">
+
+        <div class="flex items-center gap-1.5">
+
+            <input id="altura-edicao-{{ consulta.id }}" type="number" name="altura_atual"
+                form="form-editar-avaliacao-{{ consulta.id }}" value="{{ '%.1f'|format(consulta.altura_atual) }}"
+                min="1" max="300" step="0.1" required data-imc-altura="{{ consulta.id }}" class="w-[76px] rounded-lg border border-[var(--color-border)]
+                                               bg-[var(--color-surface)]
+                                               px-2 py-2 text-xs
+                                               text-[var(--color-text)]
+                                               outline-none
+                                               focus:border-[var(--color-primary)]
+                                               focus:ring-1 focus:ring-[var(--color-primary)]">
+
+            <span class="text-xs text-[var(--color-text-muted)]">
+                cm
+            </span>
+
+        </div>
+
+    </div>
+
+    </td>
+
+
+    <!-- IMC -->
+
+    <td class="px-2.5 py-3 align-top">
+
+        <div data-view="{{ consulta.id }}">
+
+            {% if consulta.imc is not none %}
+
+            <div class="text-[var(--color-text)] whitespace-nowrap">
+                {{ "%.1f"|format(consulta.imc) }}
+            </div>
+
+
+            {% if consulta_anterior and consulta_anterior.imc is not none %}
+
+            {% set imc_atual = consulta.imc|round(1) %}
+            {% set imc_anterior = consulta_anterior.imc|round(1) %}
+            {% set diferenca_imc = (imc_atual - imc_anterior)|round(1) %}
+
+            {% if diferenca_imc > 0 %}
+
+            <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                ↑ {{ "%.1f"|format(diferenca_imc) }}
+            </div>
+
+            {% elif diferenca_imc < 0 %} <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                ↓ {{ "%.1f"|format(diferenca_imc|abs) }}
+        </div>
+
+        {% else %}
+
+        <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+            —
+        </div>
+
+        {% endif %}
+
+        {% endif %}
+
+        {% else %}
+
+        <span class="text-[var(--color-text-subtle)]">
+            —
+        </span>
+
+        {% endif %}
+
+</div>
+
+
+<div data-edit="{{ consulta.id }}" class="hidden">
+
+    <div id="imc-edicao-{{ consulta.id }}" class="text-[var(--color-text)] whitespace-nowrap">
+        {{ "%.1f"|format(consulta.imc) if consulta.imc is not none else "—" }}
+    </div>
+
+    <div class="text-[10px] text-[var(--color-text-muted)] mt-1">
+        calculado
+    </div>
+
+</div>
+
+</td>
+
+
+<!-- GORDURA -->
+
+<td class="px-2.5 py-3 align-top">
+
+    <div data-view="{{ consulta.id }}">
+
+        {% if consulta.percentual_gordura is not none %}
+
+        <div class="text-[var(--color-text)] whitespace-nowrap">
+            {{ "%.1f"|format(consulta.percentual_gordura) }}%
+        </div>
+
+
+        {% if consulta_anterior and consulta_anterior.percentual_gordura is not none %}
+
+        {% set gordura_atual = consulta.percentual_gordura|round(1) %}
+        {% set gordura_anterior = consulta_anterior.percentual_gordura|round(1) %}
+        {% set diferenca_gordura = (gordura_atual - gordura_anterior)|round(1) %}
+
+        {% if diferenca_gordura > 0 %}
+
+        <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↑ {{ "%.1f"|format(diferenca_gordura) }}%
+        </div>
+
+        {% elif diferenca_gordura < 0 %} <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↓ {{ "%.1f"|format(diferenca_gordura|abs) }}%
+    </div>
+
+    {% else %}
+
+    <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+        —
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+    {% else %}
+
+    <span class="text-[var(--color-text-subtle)]">
+        —
+    </span>
+
+    {% endif %}
+
+    </div>
+
+
+    <div data-edit="{{ consulta.id }}" class="hidden">
+
+        <div class="flex items-center gap-1.5">
+
+            <input type="number" name="percentual_gordura" form="form-editar-avaliacao-{{ consulta.id }}"
+                value="{% if consulta.percentual_gordura is not none %}{{ '%.1f'|format(consulta.percentual_gordura) }}{% endif %}"
+                min="0" max="100" step="0.1" class="w-[76px] rounded-lg border border-[var(--color-border)]
+                                               bg-[var(--color-surface)]
+                                               px-2 py-2 text-xs
+                                               text-[var(--color-text)]
+                                               outline-none
+                                               focus:border-[var(--color-primary)]
+                                               focus:ring-1 focus:ring-[var(--color-primary)]">
+
+            <span class="text-xs text-[var(--color-text-muted)]">
+                %
+            </span>
+
+        </div>
+
+    </div>
+
+</td>
+
+
+<!-- MASSA MAGRA -->
+
+<td class="px-2.5 py-3 align-top">
+
+    <div data-view="{{ consulta.id }}">
+
+        {% if consulta.percentual_massa_magra is not none %}
+
+        <div class="text-[var(--color-text)] whitespace-nowrap">
+            {{ "%.1f"|format(consulta.percentual_massa_magra) }}%
+        </div>
+
+
+        {% if consulta_anterior and consulta_anterior.percentual_massa_magra is not none %}
+
+        {% set massa_atual = consulta.percentual_massa_magra|round(1) %}
+        {% set massa_anterior = consulta_anterior.percentual_massa_magra|round(1) %}
+        {% set diferenca_massa = (massa_atual - massa_anterior)|round(1) %}
+
+        {% if diferenca_massa > 0 %}
+
+        <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↑ {{ "%.1f"|format(diferenca_massa) }}%
+        </div>
+
+        {% elif diferenca_massa < 0 %} <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↓ {{ "%.1f"|format(diferenca_massa|abs) }}%
+    </div>
+
+    {% else %}
+
+    <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+        —
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+    {% else %}
+
+    <span class="text-[var(--color-text-subtle)]">
+        —
+    </span>
+
+    {% endif %}
+
+    </div>
+
+
+    <div data-edit="{{ consulta.id }}" class="hidden">
+
+        <div class="flex items-center gap-1.5">
+
+            <input type="number" name="percentual_massa_magra" form="form-editar-avaliacao-{{ consulta.id }}"
+                value="{% if consulta.percentual_massa_magra is not none %}{{ '%.1f'|format(consulta.percentual_massa_magra) }}{% endif %}"
+                min="0" max="100" step="0.1" class="w-[76px] rounded-lg border border-[var(--color-border)]
+                                               bg-[var(--color-surface)]
+                                               px-2 py-2 text-xs
+                                               text-[var(--color-text)]
+                                               outline-none
+                                               focus:border-[var(--color-primary)]
+                                               focus:ring-1 focus:ring-[var(--color-primary)]">
+
+            <span class="text-xs text-[var(--color-text-muted)]">
+                %
+            </span>
+
+        </div>
+
+    </div>
+
+</td>
+
+
+<!-- CINTURA -->
+
+<td class="px-2.5 py-3 align-top">
+
+    <div data-view="{{ consulta.id }}">
+
+        {% if consulta.circunferencia_cintura is not none %}
+
+        <div class="text-[var(--color-text)] whitespace-nowrap">
+            {{ "%.1f"|format(consulta.circunferencia_cintura) }} cm
+        </div>
+
+
+        {% if consulta_anterior and consulta_anterior.circunferencia_cintura is not none %}
+
+        {% set cintura_atual = consulta.circunferencia_cintura|round(1) %}
+        {% set cintura_anterior = consulta_anterior.circunferencia_cintura|round(1) %}
+        {% set diferenca_cintura = (cintura_atual - cintura_anterior)|round(1) %}
+
+        {% if diferenca_cintura > 0 %}
+
+        <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↑ {{ "%.1f"|format(diferenca_cintura) }} cm
+        </div>
+
+        {% elif diferenca_cintura < 0 %} <div class="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+            ↓ {{ "%.1f"|format(diferenca_cintura|abs) }} cm
+    </div>
+
+    {% else %}
+
+    <div class="text-[11px] text-[var(--color-text-subtle)] mt-0.5">
+        —
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+    {% else %}
+
+    <span class="text-[var(--color-text-subtle)]">
+        —
+    </span>
+
+    {% endif %}
+
+    </div>
+
+
+    <div data-edit="{{ consulta.id }}" class="hidden">
+
+        <div class="flex items-center gap-1.5">
+
+            <input type="number" name="circunferencia_cintura" form="form-editar-avaliacao-{{ consulta.id }}"
+                value="{% if consulta.circunferencia_cintura is not none %}{{ '%.1f'|format(consulta.circunferencia_cintura) }}{% endif %}"
+                min="0.1" max="300" step="0.1" class="w-[76px] rounded-lg border border-[var(--color-border)]
+                                               bg-[var(--color-surface)]
+                                               px-2 py-2 text-xs
+                                               text-[var(--color-text)]
+                                               outline-none
+                                               focus:border-[var(--color-primary)]
+                                               focus:ring-1 focus:ring-[var(--color-primary)]">
+
+            <span class="text-xs text-[var(--color-text-muted)]">
+                cm
+            </span>
+
+        </div>
+
+    </div>
+
+</td>
+
+
+<!-- AÇÕES -->
+
+<td class="px-2.5 py-3 align-top whitespace-nowrap">
+
+    <div data-view="{{ consulta.id }}" class="flex items-center justify-end gap-0.5">
+
+        <button type="button" data-editar-avaliacao="{{ consulta.id }}" class="inline-flex items-center justify-center w-7 h-7 rounded-lg
+                                           text-[var(--color-text-muted)]
+                                           hover:text-[var(--color-primary)]
+                                           hover:bg-[var(--color-surface-muted)]
+                                           transition-colors" title="Editar avaliação">
+            {{ lucide('pencil', size=15)|safe }}
+        </button>
+
+
+        <form method="POST" action="{{ url_for('pacientes.excluir_avaliacao', avaliacao_id=consulta.id) }}"
+            onsubmit="return confirm('Deseja realmente excluir esta avaliação?');">
+
+            <button type="submit" class="inline-flex items-center justify-center w-7 h-7 rounded-lg
+                                               text-[var(--color-text-muted)]
+                                               hover:text-red-500
+                                               hover:bg-[var(--color-surface-muted)]
+                                               transition-colors" title="Excluir avaliação">
+                {{ lucide('trash-2', size=15)|safe }}
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div data-edit="{{ consulta.id }}" class="hidden">
+
+        <form id="form-editar-avaliacao-{{ consulta.id }}" method="POST"
+            action="{{ url_for('pacientes.editar_avaliacao', avaliacao_id=consulta.id) }}">
+        </form>
+
+
+        <div class="flex items-center justify-end gap-0.5">
+
+            <button type="button" data-cancelar-avaliacao="{{ consulta.id }}" class="inline-flex items-center justify-center w-7 h-7 rounded-lg
+                                               text-[var(--color-text-muted)]
+                                               hover:text-[var(--color-text)]
+                                               hover:bg-[var(--color-surface-muted)]
+                                               transition-colors" title="Cancelar">
+                {{ lucide('x', size=15)|safe }}
+            </button>
+
+
+            <button type="submit" form="form-editar-avaliacao-{{ consulta.id }}" class="inline-flex items-center justify-center w-7 h-7 rounded-lg
+                                               bg-[var(--color-primary)]
+                                               text-white
+                                               hover:bg-[var(--color-primary-hover)]
+                                               transition-colors" title="Salvar alterações">
+                {{ lucide('check', size=15)|safe }}
+            </button>
+
+        </div>
+
+    </div>
+
+</td>
+
+</tr>
+
+
+<!-- ================================================= -->
+<!-- OBSERVAÇÕES EXISTENTES -->
+<!-- ================================================= -->
+
+{% if consulta.observacoes_clinicas %}
+
+<tr id="observacoes-{{ consulta.id }}" data-observacoes-row="{{ consulta.id }}">
+
+    <td colspan="8" class="px-2.5 py-3 bg-[var(--color-surface-muted)]">
+
+        <!-- VISUALIZAÇÃO -->
+
+        <div data-view="{{ consulta.id }}" class="flex items-start gap-3">
+
+            <div class="flex-shrink-0 mt-0.5 text-[var(--color-text-muted)]">
+                {{ lucide('message-square-text', size=16)|safe }}
+            </div>
+
+
+            <div class="min-w-0">
+
+                <div class="text-[11px] font-normal text-[var(--color-text-muted)] mb-1">
+                    Observações clínicas
+                </div>
+
+                <p class="leading-relaxed text-[var(--color-text)]">
+                    {{ consulta.observacoes_clinicas }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EDIÇÃO -->
+
+        <div data-edit="{{ consulta.id }}" class="hidden">
+
+            <label for="observacoes-{{ consulta.id }}"
+                class="block text-xs font-medium text-[var(--color-text-muted)] mb-1.5">
+                Observações clínicas
+            </label>
+
+
+            <textarea id="observacoes-{{ consulta.id }}" name="observacoes_clinicas"
+                form="form-editar-avaliacao-{{ consulta.id }}" rows="3"
+                placeholder="Registre observações relevantes desta avaliação..."
+                class="w-full rounded-lg border border-[var(--color-border)]
+                                           bg-[var(--color-surface)]
+                                           px-3 py-2.5 text-xs
+                                           text-[var(--color-text)]
+                                           placeholder:text-[var(--color-text-subtle)]
+                                           resize-y
+                                           outline-none
+                                           focus:border-[var(--color-primary)]
+                                           focus:ring-1 focus:ring-[var(--color-primary)]">{{ consulta.observacoes_clinicas }}</textarea>
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- MODELO DA LINHA DE OBSERVAÇÃO PARA NOVA OBSERVAÇÃO -->
+<!-- ===================================================== -->
+
+<template id="modelo-observacao-avaliacao">
+
+    <tr data-observacoes-row-dinamica>
+
+        <td colspan="8" class="px-2.5 py-3 bg-[var(--color-surface-muted)]">
+
+            <div>
+
+                <label class="block text-xs font-medium text-[var(--color-text-muted)] mb-1.5">
+                    Observações clínicas
+                </label>
+
+
+                <textarea data-observacao-textarea rows="3"
+                    placeholder="Registre observações relevantes desta avaliação..." class="w-full rounded-lg border border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           px-3 py-2.5 text-xs
+                           text-[var(--color-text)]
+                           placeholder:text-[var(--color-text-subtle)]
+                           resize-y
+                           outline-none
+                           focus:border-[var(--color-primary)]
+                           focus:ring-1 focus:ring-[var(--color-primary)]"></textarea>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+</template>
+<script src="{{ url_for('static', filename='js/avaliacao_fisica.js') }}"></script>

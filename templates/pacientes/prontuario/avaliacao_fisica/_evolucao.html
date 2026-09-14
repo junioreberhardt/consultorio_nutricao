@@ -1,0 +1,311 @@
+<!-- ===================================================== -->
+<!-- EVOLUÇÃO ANTROPOMÉTRICA -->
+<!-- ===================================================== -->
+
+<div id="evolucao-antropometrica" class="
+        mb-7
+        rounded-xl
+        border
+        border-[var(--color-border)]
+        bg-[var(--color-surface-muted)]
+        p-5
+    ">
+
+    <!-- ================================================= -->
+    <!-- CABEÇALHO -->
+    <!-- ================================================= -->
+
+    <div class="
+            flex
+            flex-col
+            lg:flex-row
+            lg:items-start
+            lg:justify-between
+            gap-4
+            mb-5
+        ">
+
+        <div>
+
+            <h4 class="
+                    text-sm
+                    font-semibold
+                    text-[var(--color-text)]
+                ">
+                Evolução antropométrica
+            </h4>
+
+            <p class="
+                    mt-1
+                    text-xs
+                    leading-5
+                    text-[var(--color-text-muted)]
+                ">
+                Visualize a evolução das medidas ao longo das avaliações.
+            </p>
+
+        </div>
+
+
+        <!-- CONTROLES -->
+
+        <div class="
+                flex
+                flex-col
+                sm:flex-row
+                gap-2
+                w-full
+                lg:w-auto
+            ">
+
+            <select id="periodo-evolucao" class="
+                    h-9
+                    rounded-lg
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    px-3
+                    text-xs
+                    text-[var(--color-text)]
+                    outline-none
+                    focus:border-[var(--color-primary)]
+                    focus:ring-2
+                    focus:ring-[var(--color-primary)]/10
+                ">
+
+                <option value="inicio">
+                    Desde o início
+                </option>
+
+                <option value="personalizado">
+                    Período personalizado
+                </option>
+
+            </select>
+
+
+            <select id="data-inicial-evolucao" disabled class="
+                    hidden
+                    h-9
+                    rounded-lg
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    px-3
+                    text-xs
+                    text-[var(--color-text)]
+                    outline-none
+                    focus:border-[var(--color-primary)]
+                    focus:ring-2
+                    focus:ring-[var(--color-primary)]/10
+                ">
+            </select>
+
+
+            <select id="data-final-evolucao" disabled class="
+                    hidden
+                    h-9
+                    rounded-lg
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    px-3
+                    text-xs
+                    text-[var(--color-text)]
+                    outline-none
+                    focus:border-[var(--color-primary)]
+                    focus:ring-2
+                    focus:ring-[var(--color-primary)]/10
+                ">
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- INDICADOR -->
+    <!-- ================================================= -->
+
+    <div class="mb-5">
+
+        <p class="
+                mb-2
+                text-[10px]
+                font-semibold
+                uppercase
+                tracking-wide
+                text-[var(--color-text-muted)]
+            ">
+            Indicador
+        </p>
+
+
+        <div class="flex flex-wrap gap-2">
+
+            <button type="button" class="indicador-evolucao
+                       h-8
+                       rounded-lg
+                       border
+                       border-[var(--color-primary)]
+                       bg-[var(--color-primary)]
+                       px-3
+                       text-xs
+                       font-medium
+                       text-white
+                       transition" data-indicador="peso">
+                Peso
+            </button>
+
+
+            <button type="button" class="indicador-evolucao
+                       h-8
+                       rounded-lg
+                       border
+                       border-[var(--color-border)]
+                       bg-[var(--color-surface)]
+                       px-3
+                       text-xs
+                       font-medium
+                       text-[var(--color-text-muted)]
+                       transition
+                       hover:bg-[var(--color-surface-muted)]
+                       hover:text-[var(--color-text)]" data-indicador="imc">
+                IMC
+            </button>
+
+
+            <button type="button" class="indicador-evolucao
+                       h-8
+                       rounded-lg
+                       border
+                       border-[var(--color-border)]
+                       bg-[var(--color-surface)]
+                       px-3
+                       text-xs
+                       font-medium
+                       text-[var(--color-text-muted)]
+                       transition
+                       hover:bg-[var(--color-surface-muted)]
+                       hover:text-[var(--color-text)]" data-indicador="gordura">
+                Gordura
+            </button>
+
+
+            <button type="button" class="indicador-evolucao
+                       h-8
+                       rounded-lg
+                       border
+                       border-[var(--color-border)]
+                       bg-[var(--color-surface)]
+                       px-3
+                       text-xs
+                       font-medium
+                       text-[var(--color-text-muted)]
+                       transition
+                       hover:bg-[var(--color-surface-muted)]
+                       hover:text-[var(--color-text)]" data-indicador="massa_magra">
+                Massa magra
+            </button>
+
+
+            <button type="button" class="indicador-evolucao
+                       h-8
+                       rounded-lg
+                       border
+                       border-[var(--color-border)]
+                       bg-[var(--color-surface)]
+                       px-3
+                       text-xs
+                       font-medium
+                       text-[var(--color-text-muted)]
+                       transition
+                       hover:bg-[var(--color-surface-muted)]
+                       hover:text-[var(--color-text)]" data-indicador="cintura">
+                Cintura
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ERRO / AVISO -->
+    <!-- ================================================= -->
+
+    <div id="erro-evolucao" class="
+            hidden
+            mb-4
+            rounded-lg
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface)]
+            px-3
+            py-2.5
+            text-xs
+            text-[var(--color-text-muted)]
+        ">
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- RESUMO -->
+    <!-- ================================================= -->
+
+    <div id="resumo-evolucao" class="
+            grid
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+            gap-2
+            mb-5
+        ">
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- GRÁFICO -->
+    <!-- ================================================= -->
+
+    <div class="
+            overflow-hidden
+            rounded-xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface)]
+        ">
+
+        <div id="grafico-evolucao" class="
+                min-h-[300px]
+                w-full
+                p-3
+            ">
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- DADOS DAS AVALIAÇÕES -->
+    <!-- ================================================= -->
+
+    <div id="dados-avaliacao-fisica" class="hidden">
+
+        {% for avaliacao in avaliacoes_ordenadas %}
+
+        <div class="avaliacao-grafico" data-date="{{ avaliacao.data_consulta.strftime('%Y-%m-%d') }}"
+            data-date-label="{{ avaliacao.data_consulta.strftime('%d/%m/%Y') }}"
+            data-peso="{% if avaliacao.peso_atual is not none %}{{ avaliacao.peso_atual }}{% endif %}"
+            data-imc="{% if avaliacao.imc is not none %}{{ avaliacao.imc }}{% endif %}"
+            data-gordura="{% if avaliacao.percentual_gordura is not none %}{{ avaliacao.percentual_gordura }}{% endif %}"
+            data-massa-magra="{% if avaliacao.percentual_massa_magra is not none %}{{ avaliacao.percentual_massa_magra }}{% endif %}"
+            data-cintura="{% if avaliacao.circunferencia_cintura is not none %}{{ avaliacao.circunferencia_cintura }}{% endif %}">
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

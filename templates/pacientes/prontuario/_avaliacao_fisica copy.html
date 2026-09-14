@@ -1,0 +1,1597 @@
+<!-- ===================================================== -->
+<!-- AVALIAÇÃO FÍSICA -->
+<!-- ===================================================== -->
+
+<section id="avaliacao-fisica" role="tabpanel" class="hidden
+           bg-[var(--color-surface)]
+           border border-[var(--color-border)]
+           rounded-2xl
+           shadow-sm
+           p-6">
+
+    <!-- ================================================= -->
+    <!-- CABEÇALHO -->
+    <!-- ================================================= -->
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+
+        <div>
+
+            <h3 class="text-base font-semibold text-[var(--color-text)]">
+                Avaliação física
+            </h3>
+
+            <p class="mt-1 text-sm leading-5 text-[var(--color-text-muted)]">
+                Histórico das avaliações antropométricas do paciente.
+            </p>
+
+        </div>
+
+        <a href="{{ url_for(
+            'pacientes.nova_avaliacao',
+            paciente_id=paciente.id
+        ) }}" class="
+               inline-flex
+               h-9
+               items-center
+               justify-center
+               gap-2
+               rounded-lg
+               bg-[var(--color-primary)]
+               px-3.5
+               text-xs
+               font-semibold
+               text-white
+               shadow-sm
+               transition
+               hover:bg-[var(--color-primary-hover)]
+               focus:outline-none
+               focus:ring-2
+               focus:ring-[var(--color-primary)]/20
+               shrink-0
+           ">
+
+            {{ lucide(
+            'plus',
+            style='width: 14px; height: 14px;'
+            )|safe }}
+
+            Nova avaliação
+
+        </a>
+
+    </div>
+
+
+    {% if paciente.evolucoes %}
+
+    <!-- ================================================= -->
+    <!-- ORGANIZAÇÃO DAS AVALIAÇÕES -->
+    <!-- ================================================= -->
+
+    {% set avaliacoes_ordenadas = paciente.evolucoes
+    |sort(attribute='data_consulta', reverse=true)
+    |list
+    %}
+
+    {% set ultima_avaliacao = avaliacoes_ordenadas[0] %}
+
+    {% if avaliacoes_ordenadas|length > 1 %}
+
+    {% set avaliacao_anterior = avaliacoes_ordenadas[1] %}
+
+    {% else %}
+
+    {% set avaliacao_anterior = none %}
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- ÚLTIMA AVALIAÇÃO / EVOLUÇÃO -->
+    <!-- ================================================= -->
+
+    <div class="
+            mb-7
+            rounded-xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface-muted)]
+            p-5
+        ">
+
+        <div class="
+                flex
+                flex-col
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+                gap-2
+                mb-5
+            ">
+
+            <div>
+
+                <div class="flex items-center gap-2">
+
+                    <p class="text-xs font-semibold text-[var(--color-text)]">
+                        Última avaliação
+                    </p>
+
+                </div>
+
+                <p class="mt-1 text-xs text-[var(--color-text-muted)]">
+                    {{ ultima_avaliacao.data_consulta.strftime('%d/%m/%Y') }}
+                </p>
+
+            </div>
+
+
+            {% if avaliacao_anterior %}
+
+            <p class="text-[11px] text-[var(--color-text-muted)]">
+
+                Comparação com
+                {{ avaliacao_anterior.data_consulta.strftime('%d/%m/%Y') }}
+
+            </p>
+
+            {% else %}
+
+            <p class="text-[11px] text-[var(--color-text-muted)]">
+                Primeira avaliação registrada
+            </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- VALORES PARA COMPARAÇÃO -->
+        <!-- ================================================= -->
+
+        {% if avaliacao_anterior %}
+
+        <!-- PESO -->
+
+        {% if ultima_avaliacao.peso_atual is not none
+        and avaliacao_anterior.peso_atual is not none %}
+
+        {% set peso_atual_exibido = ultima_avaliacao.peso_atual|round(1) %}
+        {% set peso_anterior_exibido = avaliacao_anterior.peso_atual|round(1) %}
+        {% set peso_diferenca = peso_atual_exibido - peso_anterior_exibido %}
+
+        {% else %}
+
+        {% set peso_diferenca = none %}
+
+        {% endif %}
+
+
+        <!-- IMC -->
+
+        {% if ultima_avaliacao.imc is not none
+        and avaliacao_anterior.imc is not none %}
+
+        {% set imc_atual_exibido = ultima_avaliacao.imc|round(1) %}
+        {% set imc_anterior_exibido = avaliacao_anterior.imc|round(1) %}
+        {% set imc_diferenca = imc_atual_exibido - imc_anterior_exibido %}
+
+        {% else %}
+
+        {% set imc_diferenca = none %}
+
+        {% endif %}
+
+
+        <!-- GORDURA -->
+
+        {% if ultima_avaliacao.percentual_gordura is not none
+        and avaliacao_anterior.percentual_gordura is not none %}
+
+        {% set gordura_atual_exibido = ultima_avaliacao.percentual_gordura|round(1) %}
+        {% set gordura_anterior_exibido = avaliacao_anterior.percentual_gordura|round(1) %}
+        {% set gordura_diferenca = gordura_atual_exibido - gordura_anterior_exibido %}
+
+        {% else %}
+
+        {% set gordura_diferenca = none %}
+
+        {% endif %}
+
+
+        <!-- MASSA MAGRA -->
+
+        {% if ultima_avaliacao.percentual_massa_magra is not none
+        and avaliacao_anterior.percentual_massa_magra is not none %}
+
+        {% set massa_magra_atual_exibido = ultima_avaliacao.percentual_massa_magra|round(1) %}
+        {% set massa_magra_anterior_exibido = avaliacao_anterior.percentual_massa_magra|round(1) %}
+        {% set massa_magra_diferenca = massa_magra_atual_exibido - massa_magra_anterior_exibido %}
+
+        {% else %}
+
+        {% set massa_magra_diferenca = none %}
+
+        {% endif %}
+
+
+        <!-- CINTURA -->
+
+        {% if ultima_avaliacao.circunferencia_cintura is not none
+        and avaliacao_anterior.circunferencia_cintura is not none %}
+
+        {% set cintura_atual_exibido = ultima_avaliacao.circunferencia_cintura|round(1) %}
+        {% set cintura_anterior_exibido = avaliacao_anterior.circunferencia_cintura|round(1) %}
+        {% set cintura_diferenca = cintura_atual_exibido - cintura_anterior_exibido %}
+
+        {% else %}
+
+        {% set cintura_diferenca = none %}
+
+        {% endif %}
+
+        {% else %}
+
+        {% set peso_diferenca = none %}
+        {% set imc_diferenca = none %}
+        {% set gordura_diferenca = none %}
+        {% set massa_magra_diferenca = none %}
+        {% set cintura_diferenca = none %}
+
+        {% endif %}
+
+
+        <!-- ================================================= -->
+        <!-- CARDS -->
+        <!-- ================================================= -->
+
+        <div class="
+                grid
+                grid-cols-2
+                sm:grid-cols-3
+                lg:grid-cols-5
+                gap-3
+            ">
+
+
+            <!-- PESO -->
+
+            <div class="
+                    rounded-xl
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    p-4
+                ">
+
+                <p class="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-wide
+                        text-[var(--color-text-muted)]
+                    ">
+                    Peso
+                </p>
+
+                <p class="
+                        mt-2
+                        text-xl
+                        font-semibold
+                        tracking-tight
+                        text-[var(--color-text)]
+                    ">
+
+                    {% if ultima_avaliacao.peso_atual is not none %}
+
+                    {{ "%.1f"|format(ultima_avaliacao.peso_atual) }}
+
+                    <span class="text-xs font-medium text-[var(--color-text-muted)]">
+                        kg
+                    </span>
+
+                    {% else %}
+
+                    <span class="text-[var(--color-text-muted)]">—</span>
+
+                    {% endif %}
+
+                </p>
+
+                {% if peso_diferenca is not none %}
+
+                {% if peso_diferenca > 0 %}
+
+                <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↑ {{ "%.1f"|format(peso_diferenca) }} kg
+                </p>
+
+                {% elif peso_diferenca < 0 %} <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↓ {{ "%.1f"|format(peso_diferenca|abs) }} kg
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        —
+                    </p>
+
+                    {% endif %}
+
+                    {% elif avaliacao_anterior %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Sem comparação
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Primeira avaliação
+                    </p>
+
+                    {% endif %}
+
+            </div>
+
+
+            <!-- IMC -->
+
+            <div class="
+                    rounded-xl
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    p-4
+                ">
+
+                <p class="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-wide
+                        text-[var(--color-text-muted)]
+                    ">
+                    IMC
+                </p>
+
+                <p class="
+                        mt-2
+                        text-xl
+                        font-semibold
+                        tracking-tight
+                        text-[var(--color-text)]
+                    ">
+
+                    {% if ultima_avaliacao.imc is not none %}
+
+                    {{ "%.1f"|format(ultima_avaliacao.imc) }}
+
+                    {% else %}
+
+                    <span class="text-[var(--color-text-muted)]">—</span>
+
+                    {% endif %}
+
+                </p>
+
+                {% if imc_diferenca is not none %}
+
+                {% if imc_diferenca > 0 %}
+
+                <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↑ {{ "%.1f"|format(imc_diferenca) }}
+                </p>
+
+                {% elif imc_diferenca < 0 %} <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↓ {{ "%.1f"|format(imc_diferenca|abs) }}
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        —
+                    </p>
+
+                    {% endif %}
+
+                    {% elif avaliacao_anterior %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Sem comparação
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Primeira avaliação
+                    </p>
+
+                    {% endif %}
+
+            </div>
+
+
+            <!-- GORDURA -->
+
+            <div class="
+                    rounded-xl
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    p-4
+                ">
+
+                <p class="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-wide
+                        text-[var(--color-text-muted)]
+                    ">
+                    Gordura
+                </p>
+
+                <p class="
+                        mt-2
+                        text-xl
+                        font-semibold
+                        tracking-tight
+                        text-[var(--color-text)]
+                    ">
+
+                    {% if ultima_avaliacao.percentual_gordura is not none %}
+
+                    {{ "%.1f"|format(ultima_avaliacao.percentual_gordura) }}
+
+                    <span class="text-xs font-medium text-[var(--color-text-muted)]">
+                        %
+                    </span>
+
+                    {% else %}
+
+                    <span class="text-[var(--color-text-muted)]">—</span>
+
+                    {% endif %}
+
+                </p>
+
+                {% if gordura_diferenca is not none %}
+
+                {% if gordura_diferenca > 0 %}
+
+                <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↑ {{ "%.1f"|format(gordura_diferenca) }} p.p.
+                </p>
+
+                {% elif gordura_diferenca < 0 %} <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↓ {{ "%.1f"|format(gordura_diferenca|abs) }} p.p.
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        —
+                    </p>
+
+                    {% endif %}
+
+                    {% elif avaliacao_anterior %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Sem comparação
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Primeira avaliação
+                    </p>
+
+                    {% endif %}
+
+            </div>
+
+
+            <!-- MASSA MAGRA -->
+
+            <div class="
+                    rounded-xl
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    p-4
+                ">
+
+                <p class="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-wide
+                        text-[var(--color-text-muted)]
+                    ">
+                    Massa magra
+                </p>
+
+                <p class="
+                        mt-2
+                        text-xl
+                        font-semibold
+                        tracking-tight
+                        text-[var(--color-text)]
+                    ">
+
+                    {% if ultima_avaliacao.percentual_massa_magra is not none %}
+
+                    {{ "%.1f"|format(ultima_avaliacao.percentual_massa_magra) }}
+
+                    <span class="text-xs font-medium text-[var(--color-text-muted)]">
+                        %
+                    </span>
+
+                    {% else %}
+
+                    <span class="text-[var(--color-text-muted)]">—</span>
+
+                    {% endif %}
+
+                </p>
+
+                {% if massa_magra_diferenca is not none %}
+
+                {% if massa_magra_diferenca > 0 %}
+
+                <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↑ {{ "%.1f"|format(massa_magra_diferenca) }} p.p.
+                </p>
+
+                {% elif massa_magra_diferenca < 0 %} <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↓ {{ "%.1f"|format(massa_magra_diferenca|abs) }} p.p.
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        —
+                    </p>
+
+                    {% endif %}
+
+                    {% elif avaliacao_anterior %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Sem comparação
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Primeira avaliação
+                    </p>
+
+                    {% endif %}
+
+            </div>
+
+
+            <!-- CINTURA -->
+
+            <div class="
+                    rounded-xl
+                    border
+                    border-[var(--color-border)]
+                    bg-[var(--color-surface)]
+                    p-4
+                ">
+
+                <p class="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-wide
+                        text-[var(--color-text-muted)]
+                    ">
+                    Cintura
+                </p>
+
+                <p class="
+                        mt-2
+                        text-xl
+                        font-semibold
+                        tracking-tight
+                        text-[var(--color-text)]
+                    ">
+
+                    {% if ultima_avaliacao.circunferencia_cintura is not none %}
+
+                    {{ "%.1f"|format(ultima_avaliacao.circunferencia_cintura) }}
+
+                    <span class="text-xs font-medium text-[var(--color-text-muted)]">
+                        cm
+                    </span>
+
+                    {% else %}
+
+                    <span class="text-[var(--color-text-muted)]">—</span>
+
+                    {% endif %}
+
+                </p>
+
+                {% if cintura_diferenca is not none %}
+
+                {% if cintura_diferenca > 0 %}
+
+                <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↑ {{ "%.1f"|format(cintura_diferenca) }} cm
+                </p>
+
+                {% elif cintura_diferenca < 0 %} <p class="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    ↓ {{ "%.1f"|format(cintura_diferenca|abs) }} cm
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        —
+                    </p>
+
+                    {% endif %}
+
+                    {% elif avaliacao_anterior %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Sem comparação
+                    </p>
+
+                    {% else %}
+
+                    <p class="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
+                        Primeira avaliação
+                    </p>
+
+                    {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- EVOLUÇÃO ANTROPOMÉTRICA -->
+    <!-- ================================================= -->
+
+    {% if avaliacoes_ordenadas|length > 1 %}
+
+    <div id="evolucao-antropometrica" class="
+            mb-7
+            rounded-xl
+            border
+            border-[var(--color-border)]
+            bg-[var(--color-surface-muted)]
+            p-5
+        ">
+
+        <!-- CABEÇALHO -->
+
+        <div class="
+                flex
+                flex-col
+                lg:flex-row
+                lg:items-start
+                lg:justify-between
+                gap-4
+                mb-5
+            ">
+
+            <div>
+
+                <h4 class="
+                        text-sm
+                        font-semibold
+                        text-[var(--color-text)]
+                    ">
+                    Evolução antropométrica
+                </h4>
+
+                <p class="
+                        mt-1
+                        text-xs
+                        leading-5
+                        text-[var(--color-text-muted)]
+                    ">
+                    Visualize a evolução das medidas ao longo das avaliações.
+                </p>
+
+            </div>
+
+
+            <!-- CONTROLES -->
+
+            <div class="
+                    flex
+                    flex-col
+                    sm:flex-row
+                    gap-2
+                    w-full
+                    lg:w-auto
+                ">
+
+                <select id="periodo-evolucao" class="
+                        h-9
+                        rounded-lg
+                        border
+                        border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3
+                        text-xs
+                        text-[var(--color-text)]
+                        outline-none
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/10
+                    ">
+
+                    <option value="inicio">
+                        Desde o início
+                    </option>
+
+                    <option value="personalizado">
+                        Período personalizado
+                    </option>
+
+                </select>
+
+
+                <select id="data-inicial-evolucao" disabled class="
+                        hidden
+                        h-9
+                        rounded-lg
+                        border
+                        border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3
+                        text-xs
+                        text-[var(--color-text)]
+                        outline-none
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/10
+                    ">
+                </select>
+
+
+                <select id="data-final-evolucao" disabled class="
+                        hidden
+                        h-9
+                        rounded-lg
+                        border
+                        border-[var(--color-border)]
+                        bg-[var(--color-surface)]
+                        px-3
+                        text-xs
+                        text-[var(--color-text)]
+                        outline-none
+                        focus:border-[var(--color-primary)]
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]/10
+                    ">
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- INDICADOR -->
+        <!-- ================================================= -->
+
+        <div class="mb-5">
+
+            <p class="
+                    mb-2
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-wide
+                    text-[var(--color-text-muted)]
+                ">
+                Indicador
+            </p>
+
+
+            <div class="flex flex-wrap gap-2">
+
+                <button type="button" class="indicador-evolucao
+                           h-8
+                           rounded-lg
+                           border
+                           border-[var(--color-primary)]
+                           bg-[var(--color-primary)]
+                           px-3
+                           text-xs
+                           font-medium
+                           text-white
+                           transition" data-indicador="peso">
+                    Peso
+                </button>
+
+
+                <button type="button" class="indicador-evolucao
+                           h-8
+                           rounded-lg
+                           border
+                           border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           px-3
+                           text-xs
+                           font-medium
+                           text-[var(--color-text-muted)]
+                           transition
+                           hover:bg-[var(--color-surface-muted)]
+                           hover:text-[var(--color-text)]" data-indicador="imc">
+                    IMC
+                </button>
+
+
+                <button type="button" class="indicador-evolucao
+                           h-8
+                           rounded-lg
+                           border
+                           border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           px-3
+                           text-xs
+                           font-medium
+                           text-[var(--color-text-muted)]
+                           transition
+                           hover:bg-[var(--color-surface-muted)]
+                           hover:text-[var(--color-text)]" data-indicador="gordura">
+                    Gordura
+                </button>
+
+
+                <button type="button" class="indicador-evolucao
+                           h-8
+                           rounded-lg
+                           border
+                           border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           px-3
+                           text-xs
+                           font-medium
+                           text-[var(--color-text-muted)]
+                           transition
+                           hover:bg-[var(--color-surface-muted)]
+                           hover:text-[var(--color-text)]" data-indicador="massa_magra">
+                    Massa magra
+                </button>
+
+
+                <button type="button" class="indicador-evolucao
+                           h-8
+                           rounded-lg
+                           border
+                           border-[var(--color-border)]
+                           bg-[var(--color-surface)]
+                           px-3
+                           text-xs
+                           font-medium
+                           text-[var(--color-text-muted)]
+                           transition
+                           hover:bg-[var(--color-surface-muted)]
+                           hover:text-[var(--color-text)]" data-indicador="cintura">
+                    Cintura
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- ERRO / AVISO -->
+        <!-- ================================================= -->
+
+        <div id="erro-evolucao" class="
+                hidden
+                mb-4
+                rounded-lg
+                border
+                border-[var(--color-border)]
+                bg-[var(--color-surface)]
+                px-3
+                py-2.5
+                text-xs
+                text-[var(--color-text-muted)]
+            "></div>
+
+
+        <!-- ================================================= -->
+        <!-- RESUMO -->
+        <!-- ================================================= -->
+
+        <div id="resumo-evolucao" class="
+                grid
+                grid-cols-1
+                sm:grid-cols-2
+                lg:grid-cols-3
+                gap-2
+                mb-5
+            "></div>
+
+
+        <!-- ================================================= -->
+        <!-- GRÁFICO -->
+        <!-- ================================================= -->
+
+        <div class="
+                overflow-hidden
+                rounded-xl
+                border
+                border-[var(--color-border)]
+                bg-[var(--color-surface)]
+            ">
+
+            <div id="grafico-evolucao" class="
+                    min-h-[300px]
+                    w-full
+                    p-3
+                "></div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- DADOS DAS AVALIAÇÕES -->
+        <!-- ================================================= -->
+
+        <div id="dados-avaliacao-fisica" class="hidden">
+
+            {% for avaliacao in avaliacoes_ordenadas %}
+
+            <div class="avaliacao-grafico" data-date="{{ avaliacao.data_consulta.strftime('%Y-%m-%d') }}"
+                data-date-label="{{ avaliacao.data_consulta.strftime('%d/%m/%Y') }}"
+                data-peso="{% if avaliacao.peso_atual is not none %}{{ avaliacao.peso_atual }}{% endif %}"
+                data-imc="{% if avaliacao.imc is not none %}{{ avaliacao.imc }}{% endif %}"
+                data-gordura="{% if avaliacao.percentual_gordura is not none %}{{ avaliacao.percentual_gordura }}{% endif %}"
+                data-massa-magra="{% if avaliacao.percentual_massa_magra is not none %}{{ avaliacao.percentual_massa_magra }}{% endif %}"
+                data-cintura="{% if avaliacao.circunferencia_cintura is not none %}{{ avaliacao.circunferencia_cintura }}{% endif %}">
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- HISTÓRICO -->
+    <!-- ================================================= -->
+
+    <div>
+
+        <div class="
+                flex
+                items-center
+                justify-between
+                gap-3
+                mb-3
+            ">
+
+            <div>
+
+                <h4 class="
+                        text-sm
+                        font-semibold
+                        text-[var(--color-text)]
+                    ">
+                    Histórico de avaliações
+                </h4>
+
+                <p class="
+                        mt-1
+                        text-xs
+                        text-[var(--color-text-muted)]
+                    ">
+                    Acompanhamento das medidas ao longo do tempo.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- TABELA -->
+        <!-- ================================================= -->
+
+        <div class="
+                overflow-hidden
+                rounded-xl
+                border
+                border-[var(--color-border)]
+            ">
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left">
+
+                    <thead class="
+                            bg-[var(--color-surface-muted)]
+                            border-b
+                            border-[var(--color-border)]
+                        ">
+
+                        <tr>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Data
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Peso
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                IMC
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Gordura
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Massa magra
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Cintura
+                            </th>
+
+                            <th
+                                class="px-4 py-3 text-right text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody class="divide-y divide-[var(--color-border)]">
+
+                        {% for consulta in avaliacoes_ordenadas %}
+
+                        {% if loop.index0 + 1 < avaliacoes_ordenadas|length %} {% set
+                            consulta_anterior=avaliacoes_ordenadas[loop.index0 + 1] %} {% else %} {% set
+                            consulta_anterior=none %} {% endif %} <!--=============================================-->
+                            <!-- DIFERENÇAS DA LINHA -->
+                            <!-- ============================================= -->
+
+                            {% if consulta_anterior %}
+
+                            <!-- PESO -->
+
+                            {% if consulta.peso_atual is not none
+                            and consulta_anterior.peso_atual is not none %}
+
+                            {% set peso_atual_exibido = consulta.peso_atual|round(1) %}
+                            {% set peso_anterior_exibido = consulta_anterior.peso_atual|round(1) %}
+                            {% set peso_diferenca = peso_atual_exibido - peso_anterior_exibido %}
+
+                            {% else %}
+
+                            {% set peso_diferenca = none %}
+
+                            {% endif %}
+
+
+                            <!-- IMC -->
+
+                            {% if consulta.imc is not none
+                            and consulta_anterior.imc is not none %}
+
+                            {% set imc_atual_exibido = consulta.imc|round(1) %}
+                            {% set imc_anterior_exibido = consulta_anterior.imc|round(1) %}
+                            {% set imc_diferenca = imc_atual_exibido - imc_anterior_exibido %}
+
+                            {% else %}
+
+                            {% set imc_diferenca = none %}
+
+                            {% endif %}
+
+
+                            <!-- GORDURA -->
+
+                            {% if consulta.percentual_gordura is not none
+                            and consulta_anterior.percentual_gordura is not none %}
+
+                            {% set gordura_atual_exibido = consulta.percentual_gordura|round(1) %}
+                            {% set gordura_anterior_exibido = consulta_anterior.percentual_gordura|round(1) %}
+                            {% set gordura_diferenca = gordura_atual_exibido - gordura_anterior_exibido %}
+
+                            {% else %}
+
+                            {% set gordura_diferenca = none %}
+
+                            {% endif %}
+
+
+                            <!-- MASSA MAGRA -->
+
+                            {% if consulta.percentual_massa_magra is not none
+                            and consulta_anterior.percentual_massa_magra is not none %}
+
+                            {% set massa_magra_atual_exibido = consulta.percentual_massa_magra|round(1) %}
+                            {% set massa_magra_anterior_exibido = consulta_anterior.percentual_massa_magra|round(1) %}
+                            {% set massa_magra_diferenca = massa_magra_atual_exibido - massa_magra_anterior_exibido %}
+
+                            {% else %}
+
+                            {% set massa_magra_diferenca = none %}
+
+                            {% endif %}
+
+
+                            <!-- CINTURA -->
+
+                            {% if consulta.circunferencia_cintura is not none
+                            and consulta_anterior.circunferencia_cintura is not none %}
+
+                            {% set cintura_atual_exibido = consulta.circunferencia_cintura|round(1) %}
+                            {% set cintura_anterior_exibido = consulta_anterior.circunferencia_cintura|round(1) %}
+                            {% set cintura_diferenca = cintura_atual_exibido - cintura_anterior_exibido %}
+
+                            {% else %}
+
+                            {% set cintura_diferenca = none %}
+
+                            {% endif %}
+
+                            {% else %}
+
+                            {% set peso_diferenca = none %}
+                            {% set imc_diferenca = none %}
+                            {% set gordura_diferenca = none %}
+                            {% set massa_magra_diferenca = none %}
+                            {% set cintura_diferenca = none %}
+
+                            {% endif %}
+
+
+                            <tr class="
+                                bg-[var(--color-surface)]
+                                hover:bg-[var(--color-surface-muted)]
+                                transition
+                            ">
+
+
+                                <!-- DATA -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    <span class="
+                                        text-xs
+                                        font-semibold
+                                        text-[var(--color-text)]
+                                    ">
+                                        {{ consulta.data_consulta.strftime('%d/%m/%Y') }}
+                                    </span>
+
+                                </td>
+
+
+                                <!-- PESO -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    {% if consulta.peso_atual is not none %}
+
+                                    <p class="text-xs font-medium text-[var(--color-text)]">
+                                        {{ "%.1f"|format(consulta.peso_atual) }} kg
+                                    </p>
+
+                                    {% if peso_diferenca is not none %}
+
+                                    {% if peso_diferenca > 0 %}
+
+                                    <p class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↑ {{ "%.1f"|format(peso_diferenca) }} kg
+                                    </p>
+
+                                    {% elif peso_diferenca < 0 %} <p
+                                        class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↓ {{ "%.1f"|format(peso_diferenca|abs) }} kg
+                                        </p>
+
+                                        {% else %}
+
+                                        <p class="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                                            —
+                                        </p>
+
+                                        {% endif %}
+
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="text-xs text-[var(--color-text-subtle)]">
+                                            —
+                                        </span>
+
+                                        {% endif %}
+
+                                </td>
+
+
+                                <!-- IMC -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    {% if consulta.imc is not none %}
+
+                                    <p class="text-xs font-medium text-[var(--color-text)]">
+                                        {{ "%.1f"|format(consulta.imc) }}
+                                    </p>
+
+                                    {% if imc_diferenca is not none %}
+
+                                    {% if imc_diferenca > 0 %}
+
+                                    <p class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↑ {{ "%.1f"|format(imc_diferenca) }}
+                                    </p>
+
+                                    {% elif imc_diferenca < 0 %} <p
+                                        class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↓ {{ "%.1f"|format(imc_diferenca|abs) }}
+                                        </p>
+
+                                        {% else %}
+
+                                        <p class="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                                            —
+                                        </p>
+
+                                        {% endif %}
+
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="text-xs text-[var(--color-text-subtle)]">
+                                            —
+                                        </span>
+
+                                        {% endif %}
+
+                                </td>
+
+
+                                <!-- GORDURA -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    {% if consulta.percentual_gordura is not none %}
+
+                                    <p class="text-xs font-medium text-[var(--color-text)]">
+                                        {{ "%.1f"|format(consulta.percentual_gordura) }}%
+                                    </p>
+
+                                    {% if gordura_diferenca is not none %}
+
+                                    {% if gordura_diferenca > 0 %}
+
+                                    <p class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↑ {{ "%.1f"|format(gordura_diferenca) }} p.p.
+                                    </p>
+
+                                    {% elif gordura_diferenca < 0 %} <p
+                                        class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↓ {{ "%.1f"|format(gordura_diferenca|abs) }} p.p.
+                                        </p>
+
+                                        {% else %}
+
+                                        <p class="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                                            —
+                                        </p>
+
+                                        {% endif %}
+
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="text-xs text-[var(--color-text-subtle)]">
+                                            —
+                                        </span>
+
+                                        {% endif %}
+
+                                </td>
+
+
+                                <!-- MASSA MAGRA -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    {% if consulta.percentual_massa_magra is not none %}
+
+                                    <p class="text-xs font-medium text-[var(--color-text)]">
+                                        {{ "%.1f"|format(consulta.percentual_massa_magra) }}%
+                                    </p>
+
+                                    {% if massa_magra_diferenca is not none %}
+
+                                    {% if massa_magra_diferenca > 0 %}
+
+                                    <p class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↑ {{ "%.1f"|format(massa_magra_diferenca) }} p.p.
+                                    </p>
+
+                                    {% elif massa_magra_diferenca < 0 %} <p
+                                        class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↓ {{ "%.1f"|format(massa_magra_diferenca|abs) }} p.p.
+                                        </p>
+
+                                        {% else %}
+
+                                        <p class="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                                            —
+                                        </p>
+
+                                        {% endif %}
+
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="text-xs text-[var(--color-text-subtle)]">
+                                            —
+                                        </span>
+
+                                        {% endif %}
+
+                                </td>
+
+
+                                <!-- CINTURA -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    {% if consulta.circunferencia_cintura is not none %}
+
+                                    <p class="text-xs font-medium text-[var(--color-text)]">
+                                        {{ "%.1f"|format(consulta.circunferencia_cintura) }} cm
+                                    </p>
+
+                                    {% if cintura_diferenca is not none %}
+
+                                    {% if cintura_diferenca > 0 %}
+
+                                    <p class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↑ {{ "%.1f"|format(cintura_diferenca) }} cm
+                                    </p>
+
+                                    {% elif cintura_diferenca < 0 %} <p
+                                        class="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                                        ↓ {{ "%.1f"|format(cintura_diferenca|abs) }} cm
+                                        </p>
+
+                                        {% else %}
+
+                                        <p class="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                                            —
+                                        </p>
+
+                                        {% endif %}
+
+                                        {% endif %}
+
+                                        {% else %}
+
+                                        <span class="text-xs text-[var(--color-text-subtle)]">
+                                            —
+                                        </span>
+
+                                        {% endif %}
+
+                                </td>
+
+
+                                <!-- AÇÕES -->
+
+                                <td class="px-4 py-4 align-top">
+
+                                    <div class="
+                                        flex
+                                        items-center
+                                        justify-end
+                                        gap-1
+                                    ">
+
+                                        <a href="{{ url_for(
+                                        'pacientes.editar_avaliacao',
+                                        avaliacao_id=consulta.id
+                                    ) }}" class="
+                                           inline-flex
+                                           h-8
+                                           w-8
+                                           items-center
+                                           justify-center
+                                           rounded-lg
+                                           text-[var(--color-text-muted)]
+                                           transition
+                                           hover:bg-[var(--color-surface-muted)]
+                                           hover:text-[var(--color-text)]
+                                       " title="Editar avaliação">
+
+                                            {{ lucide(
+                                            'pencil',
+                                            style='width: 14px; height: 14px;'
+                                            )|safe }}
+
+                                        </a>
+
+
+                                        <form method="POST" action="{{ url_for(
+                                            'pacientes.excluir_avaliacao',
+                                            avaliacao_id=consulta.id
+                                        ) }}" onsubmit="return confirm('Deseja realmente excluir esta avaliação?');">
+
+                                            <button type="submit" class="
+                                                inline-flex
+                                                h-8
+                                                w-8
+                                                items-center
+                                                justify-center
+                                                rounded-lg
+                                                text-[var(--color-text-muted)]
+                                                transition
+                                                hover:bg-[var(--color-surface-muted)]
+                                                hover:text-[var(--color-text)]
+                                            " title="Excluir avaliação">
+
+                                                {{ lucide(
+                                                'trash-2',
+                                                style='width: 14px; height: 14px;'
+                                                )|safe }}
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- ================================================= -->
+    <!-- ESTADO VAZIO -->
+    <!-- ================================================= -->
+
+    <div class="
+            rounded-xl
+            border
+            border-dashed
+            border-[var(--color-border)]
+            bg-[var(--color-surface-muted)]
+            px-6
+            py-12
+            text-center
+        ">
+
+        <div class="
+                mx-auto
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-xl
+                border
+                border-[var(--color-border)]
+                bg-[var(--color-surface)]
+                text-[var(--color-text-muted)]
+            ">
+
+            {{ lucide(
+            'clipboard-plus',
+            style='width: 20px; height: 20px;'
+            )|safe }}
+
+        </div>
+
+
+        <h4 class="
+                mt-4
+                text-sm
+                font-semibold
+                text-[var(--color-text)]
+            ">
+            Nenhuma avaliação física registrada
+        </h4>
+
+
+        <p class="
+                mx-auto
+                mt-1.5
+                max-w-md
+                text-xs
+                leading-5
+                text-[var(--color-text-muted)]
+            ">
+            Registre a primeira avaliação antropométrica para começar
+            a acompanhar a evolução do paciente.
+        </p>
+
+
+        <a href="{{ url_for(
+            'pacientes.nova_avaliacao',
+            paciente_id=paciente.id
+        ) }}" class="
+               mt-5
+               inline-flex
+               h-9
+               items-center
+               justify-center
+               gap-2
+               rounded-lg
+               bg-[var(--color-primary)]
+               px-3.5
+               text-xs
+               font-semibold
+               text-white
+               shadow-sm
+               transition
+               hover:bg-[var(--color-primary-hover)]
+           ">
+
+            {{ lucide(
+            'plus',
+            style='width: 14px; height: 14px;'
+            )|safe }}
+
+            Nova avaliação
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
